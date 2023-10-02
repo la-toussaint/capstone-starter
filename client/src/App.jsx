@@ -1,7 +1,7 @@
 import Carousel from 'react-spring-3d-carousel';
 import React from 'react';
 import { SearchInput } from '../components/Search'
-import './App.css'
+import './index.css'
 
 function App() {
     const[results, setResults] = React.useState({})
@@ -16,11 +16,11 @@ function App() {
 
   return (
     <div>
-      <SearchInput setResults={setResults} />
+      <SearchInput className="kick-search" setResults={setResults} />
         { 
           Boolean(products.length > 0) && 
-          <div style={{ height: '400px'}}>
-            <Carousel slides={products} showNavigation/>
+          <div className='kick-div' style={{ height: '400px'}}>
+            <Carousel className="kick-carousel" slides={products} showNavigation/>
           </div> 
         }
     </div>

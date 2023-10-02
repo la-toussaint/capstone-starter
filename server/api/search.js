@@ -15,18 +15,36 @@ const options = (query) => ({
   },
 });
 
-router.get(
-  "/search",
-  async (req, res, next) => {
-    const { q } = req.query
-    try {
-      const response = await axios.request(options(q));
-      res.json(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  })
+router.get("/search", async (req, res, next) => {
+  const { q } = req.query;
+  try {
+    const response = await axios.request(options(q));
+    res.json(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+});
 
+// const optionsStockX = (string) => ({
+//   url: "https://sneaker-database-stockx.p.rapidapi.com/simpleSearch",
+//   params: {
+//     string,
+//   },
+//   headers: {
+//     "X-RapidAPI-Key": "560011da9bmsh83c028acaee1b02p1ed28djsn902b2020edfc",
+//     "X-RapidAPI-Host": "sneaker-database-stockx.p.rapidapi.com",
+//   },
+// });
+
+// router.get("/search", async (req, res, next) => {
+//   const { s } = req.string;
+//   try {
+//     const response = await axios.request(options(s));
+//     res.json(response.data);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// });
 // router.get('/search', (req, res) => {
 //   res.send('searching')
 // });

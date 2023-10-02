@@ -1,5 +1,5 @@
 const client = require("../client");
-const util = require("../util");
+const util = require("../../util");
 
 async function getAllSneaks_data() {
   try {
@@ -18,89 +18,58 @@ async function getAllSneaks_data() {
 async function getSneaks_dataById(sneaks_data_id) {
   try {
     const {
-      rows: [sneaks_data],
-    } = await client.query(
-      `
-					  SELECT *
-					  FROM sneaks_data
-					  WHERE sneaks_data_id =${sneaks_data_id};
-				  `
-    );
-    return sneaks_data;
+      rows: [sneak],
+    } = await client.query(`
+		SELECT *
+	  FROM sneaks_data
+	  WHERE sneaks_data_id =${sneaks_data_id};
+				  `);
+    return sneak;
   } catch (error) {
     throw error;
   }
 }
 
 // create new sneaks_data
-async function createSneaks_dataData({
-  national_num,
-  pokename,
-  poketype1,
-  poketype2,
-  pokespecies,
-  height,
-  weight,
-  sign_ability,
-}) {
-  try {
-    const {
-      rows: [sneaks_data],
-    } = await client.query(
-      `
-        INSERT INTO sneaks_data(national_num, pokename, poketype1, poketype2, pokespecies, height, weight, sign_ability)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        RETURNING *;
-        `,
-      [
-        national_num,
-        pokename,
-        poketype1,
-        poketype2 ? poketype2 : "N/A",
-        pokespecies,
-        height,
-        weight,
-        sign_ability,
-      ]
-    );
-    return sneaks_data;
-  } catch (error) {
-    throw error;
-  }
-}
-
-// add new sneaks_data
 async function createSneaks_data({
-  national_num,
-  pokename,
-  poketype1,
-  poketype2,
-  pokespecies,
-  height,
-  weight,
-  sign_ability,
+  asin,
+  product_title,
+  product_original_price,
+  product_star_rating,
+  product_num_ratings,
+  product_url,
+  product_photo,
+  product_num_offers,
+  product_minimum_offer_price,
+  is_best_seller,
+  is_prime,
+  climate_pledge_friendly,
 }) {
   try {
     const {
-      rows: [sneaks_data],
+      rows: [sneak],
     } = await client.query(
       `
-        INSERT INTO sneaks_data(national_num, pokename, poketype1, poketype2, pokespecies, height, weight, sign_ability)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        INSERT INTO sneaks_data(asin, product_title, product_original_price, product_star_rating, product_num_ratings, product_url, product_photo, product_num_offers, product_minimum_offer_price, is_best_seller, is_prime, climate_pledge_friendly) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         RETURNING *;
         `,
       [
-        national_num,
-        pokename,
-        poketype1,
-        poketype2 ? poketype2 : "N/A",
-        pokespecies,
-        height,
-        weight,
-        sign_ability,
+        asin,
+        product_title,
+        product_original_price,
+        product_star_rating,
+        product_num_ratings,
+        product_url,
+        product_photo,
+        product_num_offers,
+        product_minimum_offer_price,
+        is_best_seller,
+        is_prime,
+        climate_pledge_friendly,
       ]
     );
-    return sneaks_data;
+    return sneak;
   } catch (error) {
     throw error;
   }
@@ -120,7 +89,7 @@ async function updateSneaks_dataById(sneaks_data_id, fields = {}) {
 
   try {
     const {
-      rows: [sneaks_data],
+      rows: [sneak],
     } = await client.query(
       `
         UPDATE sneaks_data
@@ -130,7 +99,7 @@ async function updateSneaks_dataById(sneaks_data_id, fields = {}) {
         `,
       Object.values(fields)
     );
-    return sneaks_data;
+    return sneak;
   } catch (error) {
     throw error;
   }
@@ -140,13 +109,13 @@ async function updateSneaks_dataById(sneaks_data_id, fields = {}) {
 async function deleteSneaks_dataById(sneaks_data_id) {
   try {
     const {
-      rows: [sneaks_data],
+      rows: [sneak],
     } = await client.query(`
         DELETE FROM sneaks_data
         WHERE sneaks_data_id =${sneaks_data_id};
         RETURNING *;
         `);
-    return sneaks_data;
+    return sneak;
   } catch (error) {
     throw error;
   }
@@ -158,7 +127,7 @@ async function deleteAllSneaks_data() {
     const { rows } = await client.query(`
         DELETE FROM sneaks_data;
         `);
-    return rows;
+    return sneaks_data;
   } catch (error) {
     throw error;
   }
@@ -169,7 +138,6 @@ module.exports = {
   getAllSneaks_data,
   getSneaks_dataById,
   createSneaks_data,
-  createSneaks_dataData,
   updateSneaks_dataById,
   deleteSneaks_dataById,
   deleteAllSneaks_data,

@@ -4,34 +4,35 @@
 // import ReactCardFlip from "react-card-flip";
 // import { useSelector } from "react-redux";
 // import SearchBar from "./SearchBar";
-import { useSpring, animated } from '@react-spring/web'
-export default function MyComponent() {
-	const [springs, api] = useSpring({ => {
-	  from: { x: 0 },
+// import { useSpring, animated } from '@react-spring/web';
+// import Carousel from 'react-spring-3d-carousel';
+// export default function MyComponent() {
+// 	const [springs, api] = useSpring({ => {
+// 	  from: { x: 0 },
 	
-	}))
-	const handleClick = () => {
-		api.start({
-		  from: {
-			x: 0,
-		  },
-		  to: {
-			x: 100,
-		  },
-		})
-	  }
+// 	}))
+// 	const handleClick = () => {
+// 		api.start({
+// 		  from: {
+// 			x: 0,
+// 		  },
+// 		  to: {
+// 			x: 100,
+// 		  },
+// 		})
+// 	  }
   
-	return (
-	  <animated.div  onClick={handleClick} 
-		style={{
-		  width: 80,
-		  height: 80,
-		  background: '#ff6d6d',
-		  borderRadius: 8,
-		}}
-	  />
-	)
-  }
+// 	return (
+// 	  <animated.div  onClick={handleClick} 
+// 		style={{
+// 		  width: 80,
+// 		  height: 80,
+// 		  background: '#ff6d6d',
+// 		  borderRadius: 8,
+// 		}}
+// 	  />
+// 	)
+//   }
 // export default function AllCards() {
 //   const [posts, postList] = useState([]);
 //   const [error, setError] = useState(null);
@@ -66,7 +67,7 @@ export default function MyComponent() {
 //             isFlipped={isFlipped[post.id]}
 //           >
 //             <div className="flip-card-front">
-//               <div>Post Name: {post.author.username}</div>
+//               <div>Post Name: {post.author.customername}</div>
 //               <div>Post Price: {post.price}</div>
 //               <div>Post Title: {post.title}</div>
 //               <div>Delivery: {post.willDeliver}</div>
@@ -82,7 +83,7 @@ export default function MyComponent() {
 //             </div>
 			
 //             <div className="flip-card-back">
-//               <p>Post Name: {post.author.username}</p>
+//               <p>Post Name: {post.author.customername}</p>
 //               <p>Post Name Id: {post.author._id}</p>
 //               <p>Post Cohort: {post.cohort}</p>
 //               <p>Post Created At: {post.createdAt}</p>

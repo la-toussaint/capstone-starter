@@ -1,14 +1,15 @@
 const client = require("./client");
 
 const { createSneaks_data } = require("./helpers/sneaks_data");
-
-const sneaks_data = require("./seedData");
+const { createCustomers } = require("./helpers/customers");
+const { sneaks_data, customers } = require("./seedData");
 const dropTables = async () => {
   try {
     console.log("Starting to drop tables");
     await client.query(`
 		  DROP TABLE IF EXISTS sneaks_data;
-		  
+		  DROP TABLE IF EXISTS users;
+		  DROP TABLE IF EXISTS customers;
 		  `);
     console.log("Tables dropped!");
   } catch (error) {
@@ -23,26 +24,27 @@ const createTables = async () => {
   try {
     await client.query(`
 		  CREATE TABLE sneaks_data (
-			  sneaks_id SERIAL PRIMARY KEY,
-				 asin INTEGER UNIQUE ,
-			  product_title varchar(255),
-			  product_original_price CURRENCY AMOUNT,
-			  product_star_rating  INTEGER ,
-			  product_num_ratings" varchar(255),
-			  product_url VARCHAR(255) ,
-			  product_photo  VARCHAR(255) ,
-			  product_num_offers  NUMERIC::MONEY , 
-				product_minimum_offer_price NUMERIC::MONEY 
-			  is_best_seller BOOLEAN 
-			  is_prime BOOLEAN  
-			  climate_pledge_friendly BOOLEAN
-			  
-			  CREATE TABLE users (
-				user_id SERIAL PRIMARY KEY,
-				name varchar(255)  , 
-				username varchar(255) UNIQUE , 
-				password varchar(255) ,
-				fav_pokemon varchar(255) 
+			sneaks_data_id SERIAL PRIMARY KEY,
+			asin VARCHAR(255),
+			product_title VARCHAR(255),
+			product_original_price VARCHAR(255),
+			product_star_rating VARCHAR(255),
+			product_num_ratings VARCHAR(255),
+			product_url VARCHAR(255),
+			product_photo  VARCHAR(255),
+			product_num_offers  VARCHAR(255),
+			product_minimum_offer_price VARCHAR(255),
+			is_best_seller BOOLEAN,
+			is_prime BOOLEAN,
+			climate_pledge_friendly BOOLEAN
+			);
+			
+			CREATE TABLE customers (
+				customer_id SERIAL PRIMARY KEY,
+				name varchar(255),
+				username varchar(255) UNIQUE,
+				password varchar(255),
+				fav_brand varchar(255) 
 			);`);
 
     console.log("Tables built!");
@@ -53,18 +55,24 @@ const createTables = async () => {
 
 const createInitialSneaks_data = async () => {
   try {
-    for (const sneaker of sneaks_data) await createSneaks_data(sneaker);
+    if (!sneaks_data) {
+      console.error("sneaks_data is not defined or is null.");
+      return;
+    }
+
+    const sneaksDataArray = Object.values(sneaks_data); // Convert object to an array of values
+    for (const sneak of sneaksDataArray) {
+      await createSneaks_data(sneak);
+    }
   } catch (error) {
     throw error;
   }
 };
 
-const createInitialUsers = async () => {
+const createInitialCustomers = async () => {
   try {
-    //Looping through the "trainers" array from seedData
-    //Insert each trainer into the table
-    for (const user of users)
-      await createUsers(user), console.log("created users");
+    for (const customer of customers)
+      await createCustomers(customer), console.log("created customers");
   } catch (error) {
     throw error;
   }
@@ -82,9 +90,9 @@ const rebuildDb = async () => {
 
     // Generating starting data
     console.log("starting to seed...");
-    await createInitialSneaks_data();
 
-    await createInitialUsers();
+    await createInitialSneaks_data();
+    await createInitialCustomers();
   } catch (error) {
     console.error(error);
   } finally {
