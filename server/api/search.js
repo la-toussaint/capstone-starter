@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const axios = require("axios");
+const axios = require("axios");
 
 const options = (query) => ({
   url: "https://real-time-amazon-data.p.rapidapi.com/search",

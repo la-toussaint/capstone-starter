@@ -16,6 +16,14 @@ app.use(
 );
 app.use(morgan("dev"));
 
+app.use(bodyParser.json());
+
+app.use(
+	cors({
+	  origin: "*",
+	})
+  );
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../client/dist/')));
 
