@@ -21,7 +21,6 @@ router.get(
     const { q } = req.query
     try {
       const response = await axios.request(options(q));
-      console.log(response.data);
       res.json(response.data);
     } catch (error) {
       console.error(error);
