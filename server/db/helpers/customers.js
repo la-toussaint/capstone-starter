@@ -1,4 +1,5 @@
 const client = require("../client");
+const util = require("./util");
 
 // customer functions
 const getAllCustomers = async () => {

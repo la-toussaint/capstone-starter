@@ -710,6 +710,7 @@ const sneaks_data = [
     is_prime: "true",
     climate_pledge_friendly: "false",
   },
+  
 ];
 
 const customers = [

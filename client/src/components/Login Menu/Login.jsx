@@ -1,4 +1,4 @@
-import { login } from  "../../../../Coursework/Unit03/2306-GHP-ET-WEB-FT-SF/2306-GHP-ET-WEB-FT-SF/Unit-04/PokemonApp-Unit4/Pokemon-app/client/src/API/ajax-helpers";
+import { login } from  "client/src/API/ajax-helpers";
 import React, { useState } from "react";
 import {
   Grid,
@@ -10,14 +10,14 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setToken } from "../../../../Coursework/Unit03/2306-GHP-ET-WEB-FT-SF/2306-GHP-ET-WEB-FT-SF/Unit-04/PokemonApp-Unit4/Pokemon-app/client/src/components/redux/index";
+import { setToken } from "./components/redux/index";
 
 export default function Login({ setToken, message, setMessage }) {
   const nav = useNavigate();
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [fav_pokemon, setFav_pokemon] = useState("");
+  const [fav_brand, setFav_brand] = useState("");
   const [name, setName] = useState("");
 
   const paperStyle = {
@@ -76,7 +76,7 @@ export default function Login({ setToken, message, setMessage }) {
             placeholder="Enter Pokémon name"
             fullWidth
             optional="true"
-            value={fav_pokemon}
+            value={fav_brand}
             onChange={(e) => setFav_pokemon(e.target.value)}
           />
           <Button

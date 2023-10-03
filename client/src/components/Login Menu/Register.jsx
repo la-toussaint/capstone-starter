@@ -1,6 +1,6 @@
 import { react, useState } from "react";
-import { setToken } from "../../../../Coursework/Unit03/2306-GHP-ET-WEB-FT-SF/2306-GHP-ET-WEB-FT-SF/Unit-04/PokemonApp-Unit4/Pokemon-app/client/src/components/redux/index";
-import { registerUser } from "../../../../Coursework/Unit03/2306-GHP-ET-WEB-FT-SF/2306-GHP-ET-WEB-FT-SF/Unit-04/PokemonApp-Unit4/Pokemon-app/client/src/API/ajax-helpers";
+import { setToken } from "client/src/components/redux/index";
+import { registerUser } from "../../../../../Coursework/Unit03/2306-GHP-ET-WEB-FT-SF/2306-GHP-ET-WEB-FT-SF/Unit-04/PokemonApp-Unit4/Pokemon-app/client/src/API/ajax-helpers";
 import { useNavigate } from "react-router-dom";
 
 const BASE_URL = `http://localhost:8080`;

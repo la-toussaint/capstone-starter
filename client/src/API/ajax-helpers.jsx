@@ -102,7 +102,7 @@ export const fetchShopper_Profile = (token) => async (dispatch, setCustomer_Prof
 export const deleteCloset = async (token, closet_customer_id) => {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/shoppers/closet_shopper_id`,
+      `http://localhost:3000/api/shoppers/closet_customer_id`,
       {
         method: "DELETE",
         headers: {
@@ -123,7 +123,7 @@ export const deleteCloset = async (token, closet_customer_id) => {
 export default function RenderSelectedProfile(closet_customer_id, allClosets_customer_id, token) {
   const fetchSingleCustomer = async (customer_id, token) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/shoppers/shopper_id`, {
+      const response = await fetch(`http://localhost:3000/api/customers/customer_id`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -137,17 +137,17 @@ export default function RenderSelectedProfile(closet_customer_id, allClosets_cus
     }
     return selectedCustomers;
   };
-  const usersCard = document.createCard("div");
-  usersCard.classList.add("user");
-  usersCard.innerHTML = `
+  const customersCard = document.createCard("div");
+  customersCard.classList.add("user");
+  customersCard.innerHTML = `
 	<h4>${customers.name}</h4>
-	<p>${customers.user_id}</p>
+	<p>${customers.customer_id}</p>
 	<p>${customers.username}</p>
 	<p>${customers.password}</p>
 	<p>${customers.fav_brand}</p>
 	<p>${customers.token}</p>
-	<p>${customers.posts}</p>`;
-  usersContainer.appendChild(usersCard);
+	<p>${customers.closets}</p>`;
+  customersContainer.appendChild(usersCard);
 
   const [customers, setCustomers] = useState({});
   useEffect(() => {
@@ -190,22 +190,42 @@ export default function RenderSelectedProfile(closet_customer_id, allClosets_cus
   );
 }
 
-export async function makePost(
+export async function pickCloset (closet_background, closet_temp,closet_theme, closet_mirror, closet_movie) {
+	try {
+	  const response = await fetch(`http://localhost:3000/api/closets_data`, {
+		method: "POST",
+		headers: {
+		  "Content-Type": "application/json",
+		  Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify({post: {product_title, product_price, product_url, product_photo
+	  },
+	  })
+  });
+	  const result = await response.json();
+	  console.log(result);
+	  return result;
+	} catch (error) {
+	  console.error(error);
+	}
+  }
+  
 
-) {
+
+
+
+export async function makePost (product_title, product_price, product_url, product_photo) {
   try {
-    const response = await fetch(`http://localhost:3000/api/pokedata`, {
+    const response = await fetch(`http://localhost:3000/api/sneaks_data`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        post: {
-          
-        },
-      }),
-    });
+      body: JSON.stringify({post: {product_title, product_price, product_url, product_photo
+	},
+	})
+});
     const result = await response.json();
     console.log(result);
     return result;
@@ -213,3 +233,13 @@ export async function makePost(
     console.error(error);
   }
 }
+
+export const fetchAllSneaks_data = async () => {
+	try {
+	  const response = await fetch(`http://localhost:3000/api/sneaks_data`);
+	  const result = await response.json();
+	  return result;
+	} catch (error) {
+	  console.error(error);
+	}
+  };

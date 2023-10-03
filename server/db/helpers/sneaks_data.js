@@ -1,5 +1,5 @@
 const client = require("../client");
-const util = require("../util");
+const util = require("./util");
 
 async function getAllSneaks_data() {
   try {

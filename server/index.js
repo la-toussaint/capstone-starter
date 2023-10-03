@@ -1,9 +1,26 @@
-const http = require("http");
-const app = require("./app");
-const port = process.env.PORT || 3000;
+const express = require("express");
+const app = express();
+const PORT = 3000;
 
-const server = http.createServer(app);
+// init morgan
+const morgan = require("morgan");
+app.use(morgan("dev"));
 
-server.listen(port, () => {
-  console.log(`server listening on port ${port}`);
+// init body-parser
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+
+// init cors
+const cors = require("cors");
+app.use(cors());
+
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
+// Router: /api
+app.use("/api", require("./api/index"));
+
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });
