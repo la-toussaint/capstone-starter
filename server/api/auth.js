@@ -43,7 +43,7 @@ router.post("/register", async (req, res, next) => {
       signed: true,
     });
 
-    delete customer.password;
+    delete customers.password;
 
     res.send({ customers, fav_brand, name, token });
   } catch (error) {
@@ -100,38 +100,6 @@ router.get("/logout", async (req, res, next) => {
   }
 });
 
-router.post("/test", authRequired),
-  async (req, res, next) => {
-    try {
-      const { username, password, fav_brand, name } = req.body.customers;
-      const customers = await getCustomersByUsername(username);
-      const validPassword = await bcrypt.compare(password, customers.password);
-      console.log("validPassword: ", validPassword);
-      if (validPassword) {
-        //creating our token
-        const token = jwt.sign(customers, JWT_SECRET);
 
-        //attaching a cookie to our response using the token that we created
-        res.cookie("token", token, {
-          sameSite: "strict",
-          httpOnly: true,
-          signed: true,
-        });
-
-        delete customers.password;
-        console.log(
-          "customers, fav_brand, name, token: ",
-          customers,
-          fav_brand,
-          name,
-          token
-        );
-        return res.send({ customers, fav_brand, name, token });
-      }
-      res.json({ error: { message: "Invalid password" } });
-    } catch (error) {
-      res.json({ error });
-    }
-  };
 
 module.exports = router;
