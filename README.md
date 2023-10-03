@@ -1,1 +1,0 @@
-# GHP2306-capstone-starter-repo
