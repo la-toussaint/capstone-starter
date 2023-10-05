@@ -1,12 +1,12 @@
 import { react, useState } from "react";
-import { setToken } from "client/src/components/redux/index";
-import { registerUser } from "../../../../../Coursework/Unit03/2306-GHP-ET-WEB-FT-SF/2306-GHP-ET-WEB-FT-SF/Unit-04/PokemonApp-Unit4/Pokemon-app/client/src/API/ajax-helpers";
+import { setToken } from "../components/redux/index";
+import { registerCustomers } from "../API/ajax-helpers";
 import { useNavigate } from "react-router-dom";
 
-const BASE_URL = `http://localhost:8080`;
-export const BASE_URL_USER_REG = `${BASE_URL}/api/auth/register`;
+const BASE_URL = `http://localhost:3000`;
+export const BASE_URL_USER_REG = `http://localhost:3000/api/auth/register`;
 
-export default function Register({ setToken }) {
+export default function Register({ setToken, setMessage }) {
   const [name, setName] = useState("");
   const [fav_pokemon, setFav_pokemon] = useState("");
   const [username, setUsername] = useState("");
@@ -18,7 +18,7 @@ export default function Register({ setToken }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(username, password);
-    const register = await registerUser(username, password);
+    const register = await registerCustomers(username, password);
     setToken(register.token);
     console.log(register);
     setUsername("");
@@ -34,7 +34,7 @@ export default function Register({ setToken }) {
 
   return (
     <>
-      <h2 className="sign-up">New User Sign-Up</h2>
+      <h2 className="sign-up">New Customer Sign-Up</h2>
       {error && <p className="sign-up-error">{error}</p>}
       {successMessage && <p className="sign-up-success">{successMessage}</p>}
       <form className="sign-up-form" onSubmit={handleSubmit}>

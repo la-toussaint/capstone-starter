@@ -13,8 +13,20 @@ const config = require("./config");
 const indexRouter = require("./api/index");
 const app = express();
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
+const { resolve } = require("path"); // Import the 'resolve' function
+const templatePath = path.join(__dirname, "views.jade"); // Use 'path.join' to build the template path
+
+// Load the Jade template using 'view-engine-jade'
+const template = require("view-engine-jade").load(templatePath);
+
+template.render({ name: "product" }, function (err, data) {
+  if (err) {
+    console.log("Failed to render: " + err);
+    return;
+  }
+
+  console.log("Output: " + data);
+});
 
 app.use(
   cors({
@@ -43,7 +55,7 @@ client.connect(
   (err) => console.log(err)
 );
 
-app.use("/", indexRouter);
+// app.use("/", indexRouter);
 app.use("/api", indexRouter);
 
 app.post("/test", authRequired);

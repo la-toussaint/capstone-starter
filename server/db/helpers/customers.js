@@ -103,7 +103,7 @@ async function getCustomersByIdDelPword(customer_id) {
       `
     SELECT * 
 	FROM customers
-	WHERE customers.customer_id = $1;
+	WHERE customer_id = $1;
     `[customer_id]
     );
     // if it doesn't exist, return null
@@ -118,17 +118,23 @@ async function getCustomersByIdDelPword(customer_id) {
 }
 
 const getCustomersByUsername = async (username) => {
-  const {
-    rows: [customer],
-  } = await client.query(
-    `
-		SELECT * 
-		FROM customers
-		WHERE customers.username = $1
-		`,
-    [username]
-  );
-  return customer;
+  console.log("INSIDE getCustomersByUsername username: ", username);
+  try {
+    const {
+      rows: [customer],
+    } = await client.query(
+      `
+      SELECT * 
+      FROM customers
+      WHERE username = $1
+      `,
+      [username]
+    );
+    console.log("customer: ", customer);
+    return customer;
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {

@@ -25,4 +25,8 @@ router.get("/search", async (req, res, next) => {
   }
 });
 
+// router.get('/search', (req, res) => {
+//   res.send('searching')
+// });
+
 module.exports = router;

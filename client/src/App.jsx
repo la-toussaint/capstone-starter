@@ -1,126 +1,112 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { fetchAllSneaks_data, deletePost } from "../API/ajax-helpers";
-import ReactCardFlip from "react-card-flip";
-import { useSelector } from "react-redux";
-import SearchBar from "./SearchBar";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import Register from "./components/Register";
+import Login from "./components/Login";
+import { Messages } from "./components/Messages";
+import NewPost from "./components/NewPost";
+// import SingleProfile from "./components/SingleProfile";
+import SpinCarousel from "./components/SpinCarousel";
 
-export default function AllCards() {
-  const [posts, postList] = useState([]);
-  const [error, setError] = useState(null);
-  const [isFlipped, setFlipped] = useState({});
-  const [searchParam, setSearchParam] = useState(null);
-  const navigate = useNavigate();
-  const renderImages = () => {
-    checkIfCrossoriginMeAvailable()
-      .then((crossoriginMeAvailable) => {
-        return imageUrls.map((imageUrl, index) => (
-          <img
-            src={
-              crossoriginMeAvailable
-                ? `https://crossorigin.me/${imageUrl}`
-                : `https://cors-anywhere.herokuapp.com/${imageUrl}`
-            }
-            alt
-            id="image-alt"
-            type="image/png"
-          />
-        ));
-      })
-      .catch((error) => {
-        console.error("Error checking crossorigin.me availability:", error);
-      });
-  };
+import NavBar from "./components/Navbar";
+import AllCards from "./components/AllCards";
+import "./index.css";
+
+import { fetchProfile, testAuth } from "./API/ajax-helpers";
+import { setToken, setProfile } from "./components/redux/index";
+import { Routes, Route } from "react-router-dom";
+
+const AuthRoute = ({ children }) => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  useEffect(() => {
-    fetchAllSneaks_data()
-      .then((results) => {
-        return;
 
-        postList(data);
-      })
-      .catch((error) => {
-        setError(error);
-      });
-  }, []);
+  console.log("isLoggedIn:", isLoggedIn);
 
-  useEffect(() => {
-    const filteredProduct = product.filter((p) => {
-      return p?.sneaks_data.toLowerCase().includes(searchParam);
-    });
-    postList(filteredPosts);
-  }, [searchParam]);
+  if (!isLoggedIn) {
+    return (
+      <div style={{ marginTop: "10em", backgroundColor: "red" }}>
+        You Are Not Authorized To View This Route
+      </div>
+    );
+  }
 
-  const handleClick = (id) => {
-    setFlipped({ ...isFlipped, [id]: !isFlipped[id] });
-  };
+  return <>{children}</>;
+};
+
+export default function App(customers, username, password, result, isLoggedIn) {
+  console.log("customers: ", customers, username, password);
+  const [message, setMessage] = useState(null);
+  const [token, setToken] = useState(null);
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    if (isLoggedIn) {
+      testAuth(token).then((result) =>
+        console.log("customer is authorized", result)
+      );
+      //   fetchProfile(token)(dispatch).then((data) => {
+      //    (setProfile(data));
+    }
+  }, [isLoggedIn, token]);
+
   return (
-    <div className="product-card-container">
-      <SearchBar setSearchParam={setSearchParam} />
-      {results.data.product.map((product, i) => {
-        return (
-          <div className="product-card" key={product.product_title}>
-            <ReactCardFlip
-              flipDirection="horizontal"
-              isFlipped={isFlipped[product.product_title]}
-            >
-              <div className="flip-card-front">
-                <img
-                  className="flip-front-img"
-                  src={product.product_photo}
-                  alt={`${i + 1}`}
-                />
+    <>
+      <NavBar />
+      <Routes>
+        <Route
+          path="/all-carousel"
+          element={
+            <AuthRoute token={token}>
+              <SpinCarousel />
+            </AuthRoute>
+          }
+        />
+        {/* </AuthRoute> */}
+        <Route
+          path="/"
+          element={
+            <AuthRoute token={token}>
+              <AllCards />
+            </AuthRoute>
+          }
+        />
+        {/* </AuthRoute> */}
+        <Route
+          path="/new-post-form"
+          element={
+            <AuthRoute token={token}>
+              <NewPost />
+            </AuthRoute>
+          }
+        />
+        {/* </AuthRoute> */}
 
-                <div> {product.product_title}</div>
-
-                <button
-                  className="details"
-                  onClick={() => handleClick(product.product_title_id)}
-                >
-                  See Details
-                </button>
-                {isLoggedIn && (
-                  <button
-                    className="delete"
-                    onClick={() => deleteProduct(product.product_title_id)}
-                  >
-                    Delete post
-                  </button>
-                )}
-              </div>
-              <div className="flip-card-back">
-                <img
-                  className="flip-back-img"
-                  src={product.product_photo}
-                  alt={`${i + 1}`}
-                />
-                <p> {asin}</p>
-                <p>{product_title}</p>
-                <p>
-                  {product_price}
-                  {currency}
-                </p>
-                <p>
-                  {product_original_price}
-                  {currency}
-                </p>
-                <p>{product_star_rating}</p>
-                <p>{product_num_ratings}</p>
-                <p>{product_url}</p>
-                <p>{is_best_seller}</p>
-                <p> {is_prime}</p>
-                <p> {climate_pledge_friendly}</p>
-                <button
-                  className="flip"
-                  onClick={() => handleClick(product.product_title_id)}
-                >
-                  Flip over
-                </button>
-              </div>
-            </ReactCardFlip>
-          </div>
-        );
-      })}
-    </div>
+        <Route path="/all-cards" element={<AllCards />} />
+        {/* <Route path="/customers/:userId" element={<RenderSelectedUser customers={customers} />} /> */}
+        <Route
+          path="/login"
+          element={
+            <Login
+              setMessage={setMessage}
+              setToken={setToken}
+              setProfile={setProfile}
+            />
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <Register
+              customers={customers}
+              setToken={setToken}
+              setMessage={setMessage}
+              setProfile={setProfile}
+            />
+          }
+        />
+        {/* <Route
+          path="/customers-profile"
+          element={<SingleProfile customers={customers} token={token} />}
+        /> */}
+      </Routes>
+      {message && <Messages message={message} onClose={setMessage} />}
+    </>
   );
 }

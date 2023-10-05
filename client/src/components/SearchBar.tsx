@@ -1,8 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-export const SearchInput = ({
-    setResults
-}) => {
+
+function SearchInput ({setResults}) {
     const[search, setSearch] = React.useState('')
     const[error, setError] = React.useState('')
     
@@ -24,3 +23,5 @@ export const SearchInput = ({
         {Boolean(error) && <>{error}</>}
     </div>
 }
+
+export default SearchInput;

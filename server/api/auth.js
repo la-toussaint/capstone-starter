@@ -20,7 +20,7 @@ router.get("/", async (req, res, next) => {
 
 router.post("/register", async (req, res, next) => {
   try {
-    const { username, password, fav_brand, name } = req.body.customers;
+    const { name, username, password, fav_brand } = req.body.customers;
     //hashing the password
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
     //sending username and hashed pw to database
@@ -43,9 +43,9 @@ router.post("/register", async (req, res, next) => {
       signed: true,
     });
 
-    delete customers.password;
+    delete password;
 
-    res.send({ customers, fav_brand, name, token });
+    res.send({ name, username, hashedPassword, fav_brand, token });
   } catch (error) {
     res.json({ error });
   }
@@ -53,14 +53,19 @@ router.post("/register", async (req, res, next) => {
 
 router.post("/login", async (req, res, next) => {
   try {
-    const { username, password, fav_brand, name } = req.body.customers;
+    const {
+      name = "",
+      username,
+      password,
+      fav_brand = "",
+    } = req.body.customers;
     const customers = await getCustomersByUsername(username);
     const validPassword = await bcrypt.compare(password, customers.password);
-    console.log("validPassword: ", validPassword);
     if (validPassword) {
+      console.log("validPassword customers: ", customers);
       //creating our token
       const token = jwt.sign(customers, JWT_SECRET);
-
+      console.log("token: ", token);
       //attaching a cookie to our response using the token that we created
       res.cookie("token", token, {
         sameSite: "strict",
@@ -70,16 +75,18 @@ router.post("/login", async (req, res, next) => {
 
       delete customers.password;
       console.log(
-        "customers, fav_brand, name, token: ",
-        customers,
-        fav_brand,
+        "customers: { name, username, password fav_brand, token } ",
         name,
+        username,
+        password,
+        fav_brand,
         token
       );
-      return res.send({ customers, fav_brand, name, token });
+      return res.send({ name, username, fav_brand, token });
     }
     res.json({ error: { message: "Invalid password" } });
   } catch (error) {
+    console.log("why", error);
     res.json({ error });
   }
 });
@@ -99,7 +106,5 @@ router.get("/logout", async (req, res, next) => {
     res.json({ error });
   }
 });
-
-
 
 module.exports = router;

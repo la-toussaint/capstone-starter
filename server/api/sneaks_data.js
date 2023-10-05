@@ -7,7 +7,7 @@ const {
   createSneaks_data,
   deleteSneaks_dataById,
   deleteAllSneaks_data,
-} = require("./db/helpers/sneaks_data");
+} = require("../db/helpers/sneaks_data");
 const { requireCustomer } = require("./utils");
 
 // GET /api/sneaks_data

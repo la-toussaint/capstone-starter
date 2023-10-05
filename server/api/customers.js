@@ -68,7 +68,9 @@ router.patch("/:customer_id", async (req, res, next) => {
 // DELETE /api/customer/:customerId
 router.delete("/:customer_id", async (req, res, next) => {
   try {
-    const customer = await deleteCustomersById(req.params.customer_id);
+    const customer = await deleteCustomersById(req.params.customer_id)
+      .then(console.log)
+      .catch(console.error);
     res.send(customer);
   } catch (error) {
     next(error);
