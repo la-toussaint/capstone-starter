@@ -1,3 +1,9 @@
+import removeBg from "remove-bg";
+import {
+  getAllSneaks_data,
+  updateSneaks_dataById,
+} from "../../../server/db/helpers/sneaks_data";
+
 export const testAuth = async (token) => {
   try {
     const response = await fetch(`http://localhost:3000/test`, {
@@ -104,7 +110,7 @@ export const fetchProfile =
     }
   };
 
-export const deleteProduct = async (token, product_id) => {
+export const removeProduct_from_profile = async (token, sneaks_data_id) => {
   try {
     const response = await fetch(`http://localhost:3000/api/sneaks_data`, {
       method: "DELETE",
@@ -204,7 +210,8 @@ export async function pickCloset(
   closet_temp,
   closet_theme,
   closet_mirror,
-  closet_movie
+  closet_movie,
+  closet_music
 ) {
   try {
     const response = await fetch(`http://localhost:3000/api/closets_data`, {
@@ -257,5 +264,28 @@ export const fetchAllSneaks_data = async () => {
     return result;
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const removeBackground = async (product_photo, sneaks_data_id) => {
+  if (!product_photo || !sneaks_data_id) {
+    return null;
+  }
+  try {
+    const customerSearch = await fetch(
+      `https://real-time-amazon-data.p.rapidapi.com/search`
+    );
+    const remBg = require("rembg-node");
+    const input = product_photo(imageUrl.png - o);
+    const output = await remBg.input(imageUrl.png - b);
+    const removedBackground = sneaksData.product_photo;
+    const updatedSneaksData = await updateSneaks_dataById(
+      sneaks_data_id,
+      product_photo
+    );
+
+    return updatedSneaksData;
+  } catch (error) {
+    throw error;
   }
 };

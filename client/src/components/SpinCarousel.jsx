@@ -1,24 +1,28 @@
 import Carousel from "react-spring-3d-carousel";
 import React from "react";
-// import SearchInput from "./components/cust-search/SearchBar";
 import { results } from "../../store-themes/dummy-data/practice data";
+
 function SpinCarousel() {
   const products = results?.map((product, i) => {
     return {
-      content: <img src={product.image} alt={`${i + 1}`} />,
-      key: `${product.name}-${i}`,
+      content: <img src={product.product_photo} alt={`${i + 1}`} />,
+      key: `${product.product_title}`, // Corrected the key
     };
   });
-  console.log("products: ", products);
+
   return (
-    <div>
-      {/* <SearchInput className="kick-search" setResults={setResults} /> */}
+    <div className="no-root-background">
       {Boolean(products.length > 0) && (
         <div className="kick-div" style={{ height: "400px" }}>
           <Carousel
             className="kick-carousel"
             slides={products}
             showNavigation
+            animationConfig={{ tension: 400, friction: 300 }}
+            goToSlideDelay={100}
+            offsetRadius={3}
+            offsetFromRadius={(index) => index * 50} // Corrected offsetFromRadius
+            opacity={() => 1} // Corrected opacity
           />
         </div>
       )}

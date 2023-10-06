@@ -51,6 +51,17 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
+
+
+		
+		
+
+
+ 
+
+
+// Loop over all of the images in your PostgreSQL database
+
 router.post("/login", async (req, res, next) => {
   try {
     const {
