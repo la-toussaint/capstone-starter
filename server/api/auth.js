@@ -7,6 +7,7 @@ const {
 } = require("../db/helpers/customers");
 const { authRequired } = require("./utils");
 const { JWT_SECRET } = require("../secrets");
+const { sneaks_data } = require("../db/seedData");
 
 const SALT_ROUNDS = 10;
 
@@ -51,25 +52,9 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-
-
-		
-		
-
-
- 
-
-
-// Loop over all of the images in your PostgreSQL database
-
 router.post("/login", async (req, res, next) => {
   try {
-    const {
-      name = "",
-      username,
-      password,
-      fav_brand = "",
-    } = req.body.customers;
+    const { username, password, fav_brand, name } = req.body.customers;
     const customers = await getCustomersByUsername(username);
     const validPassword = await bcrypt.compare(password, customers.password);
     if (validPassword) {
@@ -86,14 +71,14 @@ router.post("/login", async (req, res, next) => {
 
       delete customers.password;
       console.log(
-        "customers: { name, username, password fav_brand, token } ",
+        "customers: { name, username, fav_brand, token } ",
+        customers,
         name,
         username,
-        password,
         fav_brand,
         token
       );
-      return res.send({ name, username, fav_brand, token });
+      return res.send({ customers, name, username, fav_brand, token });
     }
     res.json({ error: { message: "Invalid password" } });
   } catch (error) {

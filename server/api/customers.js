@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const {
   getAllCustomers,
   getCustomersById,
@@ -9,6 +10,7 @@ const {
   deleteAllCustomers,
   deleteCustomersById,
 } = require("../db/helpers/customers");
+const { requireCustomer } = require("./utils");
 
 // GET /api/customer
 router.get("/", async (req, res, next) => {
@@ -82,6 +84,39 @@ router.delete("/", async (req, res, next) => {
   try {
     const customers = await deleteAllCustomers();
     res.send(customers);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/me", requireCustomer, async (req, res, next) => {
+  console.log("ME");
+  try {
+    res.send(req.customer);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET /api/users/:username/routines
+router.get("/:username/closets", async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const customer = await getCustomersByUsername(username);
+    if (!customer) {
+      next({
+        name: "NoCustomer",
+        message: `Error looking up customer ${username}`,
+      });
+    } else if (req.customer && customer_id === req.customer_id) {
+      const closets = await getAllClosetsByCustomers({ username: username });
+      res.send(routines);
+    } else {
+      const closets = await getTemplateClosetsByCustomers({
+        username: username,
+      });
+      res.send(closets);
+    }
   } catch (error) {
     next(error);
   }

@@ -2,6 +2,8 @@ const client = require("./client");
 
 const { createSneaks_data } = require("./helpers/sneaks_data");
 const { createCustomers } = require("./helpers/customers");
+const { createCustomers } = require("./helpers/customers");
+
 const { sneaks_data, customers } = require("./seedData");
 const dropTables = async () => {
   try {

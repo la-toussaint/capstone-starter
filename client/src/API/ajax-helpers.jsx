@@ -1,8 +1,4 @@
-import removeBg from "remove-bg";
-import {
-  getAllSneaks_data,
-  updateSneaks_dataById,
-} from "../../../server/db/helpers/sneaks_data";
+import { RemoveBackground } from "remove-bg-node";
 
 export const testAuth = async (token) => {
   try {
@@ -89,37 +85,36 @@ export const fetchAllCustomers = async () => {
 };
 
 //fetch_Profile sends token, returns user: {name, username, token, fav_brand}
-export const fetchProfile =
-  (token) => async (dispatch, setCustomer_Profile) => {
-    try {
-      const response = await fetch(`http://localhost:3000/test`, {
+
+export const fetchProfile = async (token) => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const addToCloset = async (token, username) => {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/closet_sneaks_data`,
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: "JSON",
-      });
-      if (!response.ok) {
-        throw new Error("Request failed");
       }
-      const result = await response.json();
-      dispatch(setProfile(result));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-export const removeProduct_from_profile = async (token, sneaks_data_id) => {
-  try {
-    const response = await fetch(`http://localhost:3000/api/sneaks_data`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: "JSON",
-    });
+    );
     const result = await response.json();
     console.log(result);
     return result;
@@ -128,15 +123,11 @@ export const removeProduct_from_profile = async (token, sneaks_data_id) => {
   }
 };
 
-export default function RenderSelectedProfile(
-  closet_customer_id,
-  allClosets_customer_id,
-  token
-) {
+export default function RenderSelectedProfile(customer_id, token) {
   const fetchSingleCustomer = async (customer_id, token) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/customers/customer_id`,
+        `http://localhost:3000/api/auth/me/customer_id`,
         {
           method: "POST",
           headers: {
@@ -150,10 +141,10 @@ export default function RenderSelectedProfile(
     } catch (error) {
       console.error(error);
     }
-    return selectedCustomers;
+    return SingleProfile;
   };
   const customersCard = document.createCard("div");
-  customersCard.classList.add("user");
+  customersCard.classList.add("customers");
   customersCard.innerHTML = `
 	<h4>${customers.name}</h4>
 	<p>${customers.customer_id}</p>
@@ -161,21 +152,24 @@ export default function RenderSelectedProfile(
 	<p>${customers.password}</p>
 	<p>${customers.fav_brand}</p>
 	<p>${customers.token}</p>
-	<p>${customers.closets}</p>`;
+	<p>${customers.sneaks_data_id}</p>`;
   customersContainer.appendChild(usersCard);
 
   const [customers, setCustomers] = useState({});
   useEffect(() => {
     async function fetchSelectedCustomers(token) {
       try {
-        const response = await fetch(`http://localhost:3000/test`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: "JSON",
-        });
+        const response = await fetch(
+          `http://localhost:3000/api/auth/me/customers`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: "JSON",
+          }
+        );
       } catch (error) {
         console.error(error);
       }
@@ -199,37 +193,29 @@ export default function RenderSelectedProfile(
       </p>
       <p>
         <b>Posts: </b>
-        {customers.post}
+        {customers.closetSneaks_data_id}
       </p>
     </div>
   );
 }
 
-export async function pickCloset(
-  closet_background,
-  closet_temp,
-  closet_theme,
-  closet_mirror,
-  closet_movie,
-  closet_music
-) {
+export async function SingleProfile(username) {
   try {
-    const response = await fetch(`http://localhost:3000/api/closets_data`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        post: { product_title, product_price, product_url, product_photo },
-      }),
-    });
-    const result = await response.json();
-    console.log(result);
-    return result;
+    const response = await fetch(
+      `http://localhost:3000/api/auth/me/customers/sneaks_data`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: "JSON",
+      }
+    );
   } catch (error) {
     console.error(error);
   }
+  return closet;
 }
 
 export async function makePost(
@@ -267,7 +253,7 @@ export const fetchAllSneaks_data = async () => {
   }
 };
 
-export const removeBackground = async (product_photo, sneaks_data_id) => {
+export const photoBackground = async (sneaks_data_id, fields) => {
   if (!product_photo || !sneaks_data_id) {
     return null;
   }
@@ -275,17 +261,83 @@ export const removeBackground = async (product_photo, sneaks_data_id) => {
     const customerSearch = await fetch(
       `https://real-time-amazon-data.p.rapidapi.com/search`
     );
-    const remBg = require("rembg-node");
-    const input = product_photo(imageUrl.png - o);
-    const output = await remBg.input(imageUrl.png - b);
+    let rm = new RemoveBackground();
+    const input = product_photo.rm;
+    const output = await removedBackground.input;
     const removedBackground = sneaksData.product_photo;
-    const updatedSneaksData = await updateSneaks_dataById(
-      sneaks_data_id,
-      product_photo
-    );
+    const result = updatedSneaksData;
 
     return updatedSneaksData;
   } catch (error) {
     throw error;
+  }
+};
+
+export const newClosetSneaks_data = async (
+  closetSneaks_data,
+  closet_id,
+  sneaks_data_id,
+  sneaks_data,
+  product_title,
+  product_price,
+  product_url,
+  product_photo
+) => {
+  try {
+    const newClosetSneaks_data = await add_newClosetSneaks_data(
+      `http://localhost:3000/api/closet_sneaks_data/:closet_sneaks_data_id`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          closetSneaks_data,
+          sneaks_data_id,
+          sneaks_data: {
+            product_title,
+            product_price,
+            product_url,
+            product_photo,
+          },
+        }),
+      }
+    );
+    const result = await response.json();
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteClosetSneaks_Data = async (
+  closet_id,
+  closetSneaks_data_id,
+  sneaks_data_id
+) => {
+  try {
+    const closetSneaks_data_id = await axios.patch(
+      `http://localhost:3000/api/closet_sneaks_data`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          closetSneaks_data_id: {
+            closet_id,
+            sneaks_data_id,
+          },
+        }),
+      }
+    );
+    const result = await response.json();
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error);
   }
 };

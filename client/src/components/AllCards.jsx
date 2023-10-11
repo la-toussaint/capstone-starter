@@ -1,18 +1,24 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { fetchAllSneaks_data, deleteProduct } from "../API/ajax-helpers";
+import {
+  fetchAllSneaks_data,
+  photoBackground,
+  newClosetSneaks_data,
+} from "../API/ajax-helpers";
 import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
 import SearchBar from "./SearchBar";
+import RemoveBackground from "remove-bg-node";
 
 function AllCards() {
   const [products, productList] = useState([]);
   const [error, setError] = useState(null);
   const [isFlipped, setFlipped] = useState({});
   const [searchParam, setSearchParam] = useState(null);
+  const [newClosetSneaks_data, addNewClosetsSneaks_data] = useState({});
 
   const renderImages = () => {
-    checkIfCrossoriginMeAvailable()
+    photoBackground()
       .then((crossoriginMeAvailable) => {
         return imageUrls.map((imageUrl, index) => (
           <img
@@ -21,8 +27,8 @@ function AllCards() {
                 ? `https://crossorigin.me/${imageUrl}`
                 : `https://cors-anywhere.herokuapp.com/${imageUrl}`
             }
-            alt
-            id="image-alt"
+            alt={`Image ${index}`}
+            key={`image-${index}`}
             type="image/png"
           />
         ));
@@ -51,6 +57,7 @@ function AllCards() {
 
   const handleClick = (id) => {
     setFlipped({ ...isFlipped, [id]: !isFlipped[id] });
+    NewClosetsSneaks_data(...add, [closetSneaks_data_id]);
   };
   return (
     <div className="product-card-container">
@@ -73,16 +80,18 @@ function AllCards() {
 
                 <button
                   className="details"
-                  onClick={() => handleClick(product.sneaks_data_id)}
+                  onClick={() => setFlipped(product.sneaks_data_id)}
                 >
                   See Details
                 </button>
                 {isLoggedIn && (
                   <button
-                    className="delete"
-                    onClick={() => deleteProduct(product.sneaks_data_id)}
+                    className="add"
+                    onClick={() =>
+                      addNewClosetSneaks_data(product.sneaks_data_id)
+                    }
                   >
-                    Delete product
+                    Add to Your Closet
                   </button>
                 )}
               </div>
@@ -109,7 +118,7 @@ function AllCards() {
                 <p> {product.climate_pledge_friendly}</p>
                 <button
                   className="flip"
-                  onClick={() => handleClick(product.sneaks_data_id)}
+                  onClick={() => setFlipped(product.sneaks_data_id)}
                 >
                   Flip over
                 </button>

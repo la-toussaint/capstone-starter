@@ -72,6 +72,8 @@
   
   .post-card-container {
 	display: grid;
+	z-index: 10;
+	background-image: url('background-image-subway.png');
 	grid-template-columns: auto auto auto;
 	flex-direction: column;
 	margin-top: 150px;
@@ -95,7 +97,7 @@
   border: 5px solid midnightblue;
   }
   
-  .post-card {
+  .product-card {
 	display: inline-grid;
 	justify-content: space-evenly;
 	justify-items: stretch;
@@ -129,7 +131,7 @@
 	overflow-y: scroll;
   }
   
-  .post-img {
+  .flip-front-img {
 	height: 220px;
 	width: 220px;
 	padding: 2 px;
@@ -139,7 +141,7 @@
 	justify-items: center;
   } 
   
-  .post-card-back {
+  .flip-back-img {
 	height: 200px;
 	width: 200px;
 	line-height: 30pt;
@@ -174,7 +176,7 @@
   
   
   
-  .delete {
+  .add {
 	background-color: #fdac53;
 	color: #ffffff;
 	font-size: 12pt;

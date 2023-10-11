@@ -1,14 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
-import NavBar from "../../../../Coursework/2306-GHP-ET-WEB-FT-SF/2306-GHP-ET-WEB-FT-SF/Unit-04/PokemonApp-Unit4/PokemonApp-Unit4/client/src/components/Navbar";
+import NavBar from "./Navbar";
 import { useState } from "react";
-import {
-  fetchProfile,
-  deletePost,
-} from "../../../../Coursework/2306-GHP-ET-WEB-FT-SF/2306-GHP-ET-WEB-FT-SF/Unit-04/PokemonApp-Unit4/PokemonApp-Unit4/client/src/API/ajax-helpers";
-import {
-  setProfile,
-  deletePostFromProfile,
-} from "../../../../Coursework/2306-GHP-ET-WEB-FT-SF/2306-GHP-ET-WEB-FT-SF/Unit-04/PokemonApp-Unit4/PokemonApp-Unit4/client/src/components/redux/index";
+import { fetchProfile, deleteClosetSneaks_Data } from "../API/ajax-helpers";
+import { setProfile, setToken } from "./redux/index";
 import React from "react";
 
 export default function ProfileLog() {
@@ -17,7 +11,7 @@ export default function ProfileLog() {
   //   const token = useSelector((state) => state.auth.token);
   const [isOpen, setIsOpen] = useState(true);
   const [products, productList] = useState([]);
-  const [deleteProductFromProfile] = useState("");
+  const [removeProductFromProfile] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [customers, setProfile] = useState(null);
   const [token, setToken] = useState(null);
@@ -58,14 +52,16 @@ export default function ProfileLog() {
     setIsOpen(!isOpen);
   };
 
-  const handlePostDelete = (token, pokedata_id) => {
-    deletePost(token, sneaks_data_id);
+  const handlePostDelete = (token, sneaks_data_id) => {
+    removeProductFromCloset(token, sneaks_data_id);
     deletePostFromProfile(id);
   };
 
   return (
     <div className="profile-container">
-      <h2 className="profile-header">Products for Username: {customers?.username}</h2>
+      <h2 className="profile-header">
+        Products for Username: {customers?.username}
+      </h2>
       <div>
         <button className="profile-log-button" onClick={handleToggleDropdown}>
           {isOpen ? "Hide Logs" : "Show Logs"}
@@ -73,44 +69,54 @@ export default function ProfileLog() {
         {isOpen && (
           <ul className="profile-log-list">
             {customers?.products?.map((product) => (
-              <li className="profile-log-item" key={product.product_title}>
+              <li className="profile-log-item" key={product.sneaks_data_id}>
                 Pokémon Image:{" "}
                 <img
                   className="post-img"
-				  src={product.product_photo}
+                  src={product.product_photo}
                   alt={`${i + 1}`}
                 />
-                <p> {asin}</p>
-                <p>{product_title}</p>
+                <p> {product.asin}</p>
+                <p>{product.product_title}</p>
                 <p>
-                  {product_price}
-                  {currency}
+                  {product.product_price}
+                  {product.currency}
                 </p>
                 <p>
-                  {product_original_price}
-                  {currency}
+                  {product.product_original_price}
+                  {product.currency}
                 </p>
-                <p>{product_star_rating}</p>
-                <p>{product_num_ratings}</p>
-                <p>{product_url}</p>
-                <p>{is_best_seller}</p>
-                <p> {is_prime}</p>
-                <p> {climate_pledge_friendly}</p>
+                <p>{product.product_star_rating}</p>
+                <p>{product.product_num_ratings}</p>
+                <p>{product.product_url}</p>
+                <p>{product.is_best_seller}</p>
+                <p> {product.is_prime}</p>
+                <p> {product.climate_pledge_friendly}</p>
                 <img
                   className="post-img-back"
                   src={post.post_g_max_image}
                   alt={post.pokename - "Giga"}
                 />
-                , Pokémon G-Max Move: {post.g_max_move}, Pokémon G-Max Move
-                Type: {post.g_max_move_type}, Pokémon Height: {post.height},
-                Pokémon Weight: {post.weight}, Pokémon Post-Gmax Height:{" "}
-                {post.post_g_max_height}, REPRODUCTION: Pokémon Gender:{" "}
-                {post.gender}, Pokémon Egg Group: {post.egg_group}, Pokémon
-                Compatible Parent: {post.comp_parent}
+                <p> {product.asin}</p>
+                <p>{product.product_title}</p>
+                <p>
+                  {product.product_price}
+                  {product.currency}
+                </p>
+                <p>
+                  {product.product_original_price}
+                  {product.currency}
+                </p>
+                <p>{product.product_star_rating}</p>
+                <p>{product.product_num_ratings}</p>
+                <p>{product.product_url}</p>
+                <p>{product.is_best_seller}</p>
+                <p> {product.is_prime}</p>
+                <p> {product.climate_pledge_friendly}</p>{" "}
                 <button
                   className="delete"
-                  onClick={() => handlePostDelete(token, pokedata_id)}
-                  disabled={users.pokedata_id !== post.pokedata}
+                  onClick={() => handlePostDelete(token, { sneaks_data_id })}
+                  disabled={customers.sneaks_data_id !== product.sneaks_data_id}
                 >
                   Delete post
                 </button>

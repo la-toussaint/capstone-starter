@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import { Messages } from "./components/Messages";
-import NewPost from "./components/NewPost";
-// import SingleProfile from "./components/SingleProfile";
-import SpinCarousel from "./components/SpinCarousel";
 
+import SingleProfile from "./components/SingleProfile";
+import SpinCarousel from "./components/SpinCarousel";
+import Closet from "./components/Closet";
 import NavBar from "./components/Navbar";
 import AllCards from "./components/AllCards";
 import "./index.css";
@@ -50,6 +50,15 @@ export default function App(customers, username, password, result, isLoggedIn) {
     <>
       <NavBar />
       <Routes>
+	  <Route
+          path="/my-closet"
+          element={
+            <AuthRoute token={token}>
+              <Closet />
+            </AuthRoute>
+          }
+        />
+        {/* </AuthRoute> */}
         <Route
           path="/all-carousel"
           element={
@@ -67,16 +76,7 @@ export default function App(customers, username, password, result, isLoggedIn) {
             </AuthRoute>
           }
         />
-        {/* </AuthRoute> */}
-        <Route
-          path="/new-post-form"
-          element={
-            <AuthRoute token={token}>
-              <NewPost />
-            </AuthRoute>
-          }
-        />
-        {/* </AuthRoute> */}
+      
 
         <Route path="/all-cards" element={<AllCards />} />
         {/* <Route path="/customers/:userId" element={<RenderSelectedUser customers={customers} />} /> */}
@@ -101,10 +101,10 @@ export default function App(customers, username, password, result, isLoggedIn) {
             />
           }
         />
-        {/* <Route
-          path="/customers-profile"
+        {<Route
+          path="/profile"
           element={<SingleProfile customers={customers} token={token} />}
-        /> */}
+        />}
       </Routes>
       {message && <Messages message={message} onClose={setMessage} />}
     </>

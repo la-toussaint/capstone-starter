@@ -21,9 +21,9 @@ router.get("/", async (req, res, next) => {
 });
 
 // GET /api/sneaks_data/:sneaks_dataId
-router.get("/:sneaks_dataId", async (req, res, next) => {
+router.get("/:sneaks_dataById", async (req, res, next) => {
   try {
-    const sneaks_data = await getSneaks_dataById(req.params.sneaks_dataId);
+    const sneaks_data = await getSneaks_dataById(req.params.sneaks_dataById);
     res.send(sneaks_data);
   } catch (error) {
     next(error);
@@ -31,10 +31,10 @@ router.get("/:sneaks_dataId", async (req, res, next) => {
 });
 
 // PATCH /api/sneaks_data/:sneaks_dataId
-router.patch("/:sneaks_dataId", async (req, res, next) => {
+router.patch("/:sneaks_dataById", async (req, res, next) => {
   try {
     const sneaks_data = await updateSneaks_dataById(
-      req.params.sneaks_dataId,
+      req.params.sneaks_dataById,
       req.body
     );
     res.send(sneaks_data);
@@ -53,10 +53,10 @@ router.post("/", async (req, res, next) => {
 });
 
 // DELETE /api/sneaks_data/:sneaks_dataId
-router.delete("/:sneaks_dataId", async (req, res, next) => {
+router.delete("/:sneaks_data_id", async (req, res, next) => {
   try {
-    const sneaks_data = await deleteSneaks_dataById(req.params.sneaks_dataId);
-    res.send(sneaks_data);
+    const sneaks_data = await deleteSneaks_dataById(req.params.sneaks_data_id);
+    res.send(sneaks_data_id);
   } catch (error) {
     next(error);
   }

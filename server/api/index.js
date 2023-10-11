@@ -15,4 +15,8 @@ router.use("/sneaks_data", require("./sneaks_data"));
 
 router.use("/customers", require("./customers"));
 
+router.use("/me", require("./customers"));
+
+router.use("/closets", require("./closets"));
+
 module.exports = router;

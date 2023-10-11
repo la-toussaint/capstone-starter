@@ -739,4 +739,32 @@ const customers = [
   },
 ];
 
-module.exports = { sneaks_data, customers };
+const closets = [
+  {
+    creatorId: "bruno",
+    name: "Kickstand",
+    background: "subway tiles",
+    product_type: "sneaks_data",
+    isTemplate: true,
+  },
+  {
+    creatorId: "bruno",
+    name: "ilove.boo!",
+    product_type: "costumes",
+    isTemplate: true,
+  },
+  {
+    creatorId: "winston",
+    name: "oh the places we'll go!",
+    product_type: "variety",
+    isTemplate: true,
+  },
+  {
+    name: "bruno",
+    name: "alden",
+    product_type: "books",
+    isTemplate: "true",
+  },
+];
+
+module.exports = { sneaks_data, customers, closets };
