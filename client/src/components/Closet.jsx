@@ -5,8 +5,8 @@ import $ from "jquery";
 import carousel from "gsap";
 import {
   fetchAllSneaks_data,
-  photoBackground,
-  addToCloset,
+  sneaksPhotoBackground,
+  newClosetSneaks_data,
 } from "../API/ajax-helpers";
 import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
@@ -22,7 +22,7 @@ export default function MyCloset() {
   const [searchParam, setSearchParam] = useState(null);
 
   const renderImages = () => {
-    photoBackground()
+    sneaksPhotoBackground()
       .then((crossoriginMeAvailable) => {
         return imageUrls.map((imageUrl, index) => (
           <img
@@ -43,7 +43,7 @@ export default function MyCloset() {
   };
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   useEffect(() => {
-    fetchProfile
+    fetchAllSneaks_data
       .then((results) => {
         productList(results);
       })

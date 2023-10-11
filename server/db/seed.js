@@ -1,17 +1,25 @@
 const client = require("./client");
 
 const { createSneaks_data } = require("./helpers/sneaks_data");
+const { createcreateCostumes_data } = require("./helpers/costumes_data");
 const { createCustomers } = require("./helpers/customers");
-const { createCustomers } = require("./helpers/customers");
-
-const { sneaks_data, customers } = require("./seedData");
+const { createClosets } = require("./helpers/closets");
+const {
+  sneaks_data,
+  costumes_data,
+  customers,
+  closets,
+} = require("./seedData");
 const dropTables = async () => {
   try {
     console.log("Starting to drop tables");
     await client.query(`
 		  DROP TABLE IF EXISTS sneaks_data;
+		  DROP TABLE IF EXISTS costumes_data;
 		  DROP TABLE IF EXISTS users;
 		  DROP TABLE IF EXISTS customers;
+		  DROP TABLE IF EXISTS closets;
+		  
 		  `);
     console.log("Tables dropped!");
   } catch (error) {
@@ -34,12 +42,28 @@ const createTables = async () => {
 			product_num_ratings VARCHAR(255),
 			product_url VARCHAR(255),
 			product_photo  VARCHAR(255),
-			product_num_offers  VARCHAR(255),
+			product_num_offers VARCHAR(255),
 			product_minimum_offer_price VARCHAR(255),
 			is_best_seller BOOLEAN,
 			is_prime BOOLEAN,
 			climate_pledge_friendly BOOLEAN
 			);
+			
+			CREATE TABLE costumes_data (
+				costumes_data_id SERIAL PRIMARY KEY,
+				asin VARCHAR(255),
+				product_title VARCHAR(255),
+				product_original_price VARCHAR(255),
+				product_star_rating VARCHAR(255),
+				product_num_ratings VARCHAR(255),
+				product_url VARCHAR(255),
+				product_photo  VARCHAR(255),
+				product_num_offers VARCHAR(255),
+				product_minimum_offer_price VARCHAR(255),
+				is_best_seller BOOLEAN,
+				is_prime BOOLEAN,
+				climate_pledge_friendly BOOLEAN
+				);
 			
 			CREATE TABLE customers (
 				customer_id SERIAL PRIMARY KEY,
@@ -47,7 +71,16 @@ const createTables = async () => {
 				username varchar(255) UNIQUE,
 				password varchar(255),
 				fav_brand varchar(255) 
-			);`);
+			);
+			
+			CREATE TABLE closets (
+				closet_id SERIAL PRIMARY KEY,
+				name varchar(255),
+				creatorId varchar(255),
+				isTemplate BOOLEAN, 
+				background varchar(255),
+				product_type varchar(255)
+				);`);
 
     console.log("Tables built!");
   } catch (error) {
@@ -71,10 +104,35 @@ const createInitialSneaks_data = async () => {
   }
 };
 
+const createInitialCostumes_data = async () => {
+  try {
+    if (!costumes_data) {
+      console.error("costumes_data is not defined or is null.");
+      return;
+    }
+
+    const costumesDataArray = Object.values(costumes_data); // Convert object to an array of values
+    for (const costume of costumesDataArray) {
+      await createCostumes_data(costume);
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 const createInitialCustomers = async () => {
   try {
     for (const customer of customers)
       await createCustomers(customer), console.log("created customers");
+  } catch (error) {
+    throw error;
+  }
+};
+
+const createInitialClosets = async () => {
+  try {
+    for (const closet of closets)
+      await createClosets(closet), console.log("created closets");
   } catch (error) {
     throw error;
   }
@@ -94,7 +152,9 @@ const rebuildDb = async () => {
     console.log("starting to seed...");
 
     await createInitialSneaks_data();
+    await createInitialCostumes_data();
     await createInitialCustomers();
+    await createInitialClosets();
   } catch (error) {
     console.error(error);
   } finally {

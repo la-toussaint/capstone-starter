@@ -1,0 +1,88 @@
+const express = require("express");
+const router = express.Router();
+const {
+  updateClosetCostumes_data,
+  canEditClosetCostumes_data,
+  destroyClosetCostumes_data,
+  getClosetCostumes_dataById,
+} = require("../db/helpers/closets", "../db/helpers/costumes_data");
+const client = require("../db/client");
+const { requireCustomer, requiredNotSent } = require("./utils");
+
+// PATCH /api/closet_activities/:closetCostumes_data_id
+router.patch(
+  "/:closetCostumes_data_id",
+  requireCustomer,
+  requiredNotSent({
+    requiredParams: ["name", "product_type"],
+    atLeastOne: true,
+  }),
+  async (req, res, next) => {
+    try {
+      const { name, product_type } = req.body;
+      const { closetCostumes_data_id } = req.params;
+      const closetCostumes_dataToUpdate = await getClosetCostumes_dataById(
+        closetCostumes_data_id
+      );
+      if (!closetCostumes_dataToUpdate) {
+        next({
+          name: "NotFound",
+          message: `No closet_costumes_data found by ID ${closetCostumes_data_id}`,
+        });
+      } else {
+        if (
+          !(await canEditClosetCostumes_data(
+            req.params.closetCostumes_data_id,
+            req.customer_id
+          ))
+        ) {
+          res.status(403);
+          next({
+            name: "Unauthorized",
+            message: "You cannot edit this closet_costumes_data!",
+          });
+        } else {
+          const updatedClosetCostumes_data = await updateClosetCostumes_data({
+            id: req.params.closetCostumes_data_id,
+            name,
+            product_type,
+          });
+          res.send(updatedClosetCostumes_data);
+        }
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// DELETE /api/closet_costumes_data/:closetCostumes_data_id
+router.delete(
+  "/:closetCostumes_data_id",
+  requireCustomer,
+  async (req, res, next) => {
+    try {
+      if (
+        !(await canEditClosetCostumes_data(
+          req.params.closetCostumes_data_id,
+          req.customer_id
+        ))
+      ) {
+        res.status(403);
+        next({
+          name: "Unauthorized",
+          message: "You cannot edit this closet_costumes_data!",
+        });
+      } else {
+        const deletedClosetCostumes_data = await destroyClosetCostumes_data(
+          req.params.closetCostumes_data_id
+        );
+        res.send({ success: true, ...deletedClosetCostumes_data });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+module.exports = router;

@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import NavBar from "./Navbar";
 import { useState } from "react";
-import { fetchProfile, deleteClosetSneaks_Data } from "../API/ajax-helpers";
+import { fetchProfile, deleteClosetSneaks_Data, deleteClosetCostumes_Data } from "../API/ajax-helpers";
 import { setProfile, setToken } from "./redux/index";
 import React from "react";
 
@@ -53,7 +53,7 @@ export default function ProfileLog() {
   };
 
   const handlePostDelete = (token, sneaks_data_id) => {
-    removeProductFromCloset(token, sneaks_data_id);
+    deleteClosetSneaks_data(token, sneaks_data_id);
     deletePostFromProfile(id);
   };
 

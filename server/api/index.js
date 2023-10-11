@@ -12,6 +12,7 @@ router.use("/search", require("./search"));
 router.use("/auth", require("./auth"));
 
 router.use("/sneaks_data", require("./sneaks_data"));
+router.use("/costumes_data", require("./costumes_data"));
 
 router.use("/customers", require("./customers"));
 

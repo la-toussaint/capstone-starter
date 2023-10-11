@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   fetchAllSneaks_data,
-  photoBackground,
+  sneaksPhotoBackground,
   newClosetSneaks_data,
 } from "../API/ajax-helpers";
 import ReactCardFlip from "react-card-flip";
@@ -18,7 +18,7 @@ function AllCards() {
   const [newClosetSneaks_data, addNewClosetsSneaks_data] = useState({});
 
   const renderImages = () => {
-    photoBackground()
+    sneaksPhotoBackground()
       .then((crossoriginMeAvailable) => {
         return imageUrls.map((imageUrl, index) => (
           <img

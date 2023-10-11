@@ -8,7 +8,9 @@ const {
   destroyCloset,
   addSneaks_dataToCloset,
   getClosetSneaks_dataByCloset,
-} = require("../db/helpers/closets");
+  addCostumes_dataToCloset,
+  getClosetCostumes_dataByCloset,
+} = require("../db/helpers/closets", "../db/helpers/costumes_data", "../db/helpers/sneaks_data");;
 const { requireCustomer, requiredNotSent } = require("./utils");
 
 // GET /api/closets
@@ -60,8 +62,8 @@ router.patch(
   }),
   async (req, res, next) => {
     try {
-      const { name, product_type, isTemplate } = req.body;
-      const { closetId } = req.params;
+      const { name, background, product_type, isTemplate } = req.body;
+      const { closetId } = req.params.body;
       const closetToUpdate = await getClosetById(closet_id);
       if (!closetToUpdate) {
         next({
@@ -77,8 +79,9 @@ router.patch(
         });
       } else {
         const updatedCloset = await updateCloset({
-          id: closet_id,
+          id: "closet_id",
           name,
+		  background,
           product_type,
           isTemplate,
         });
@@ -125,11 +128,13 @@ router.delete("/:closet_id", requireCustomer, async (req, res, next) => {
 
 // POST /api/closets/:closetId/activities
 router.post(
-  "/:closet_id/activities",
-  requiredNotSent({ requiredParams: ["sneaks_data_id", "count", "duration"] }),
+  "/:closet_id/sneaks_data",
+  requiredNotSent({
+    requiredParams: ["sneaks_data_id", "name", "product_type"],
+  }),
   async (req, res, next) => {
     try {
-      const { sneaks_data_id, count, duration } = req.body;
+      const { sneaks_data_id, name, product_type } = req.body;
       const { closet_id } = req.params;
       const foundClosetSneaks_data = await getClosetSneaks_dataByCloset({
         id: closet_id,
@@ -149,8 +154,8 @@ router.post(
         const createdClosetSneaks_data = await addSneaks_dataToCloset({
           closet_id,
           sneaks_data_id,
-          count,
-          duration,
+          name,
+          product_type,
         });
         if (createdClosetSneaks_data) {
           res.send(createdClosetSneaks_data);
@@ -166,5 +171,49 @@ router.post(
     }
   }
 );
+
+router.post;
+"/:closet_id/costumes_data",
+  requiredNotSent({
+    requiredParams: ["costumes_data_id", "name", "product_type"],
+  }),
+  async (req, res, next) => {
+    try {
+      const { costumes_data_id, name, product_type } = req.body;
+      const { closet_id } = req.params;
+      const foundClosetCostumes_data = await getClosetCostumes_dataByCloset({
+        id: closet_id,
+      });
+      const existingClosetCostumes_data =
+        foundClosetCostumes_data &&
+        foundClosetCostumes_data.filter(
+          (closetCostumes_data) =>
+            closetCostumes_data.costumes_data_id === costumes_data_id
+        );
+      if (existingClosetCostumes_data && existingClosetCostumes_data.length) {
+        next({
+          name: "ClosetCostumes_dataExistsError",
+          message: `A closet_costumes_data by that closet_id ${closet_id}, costumes_data_id ${costumes_data_id} combination already exists`,
+        });
+      } else {
+        const createdClosetCostumes_data = await addCostumes_dataToCloset({
+          closet_id,
+          costumes_data_id,
+          name,
+          product_type,
+        });
+        if (createdClosetCostumes_data) {
+          res.send(createdClosetCostumes_data);
+        } else {
+          next({
+            name: "FailedToCreate",
+            message: `There was an error adding costumes_data ${costumes_data_id} to closet ${closet_id}`,
+          });
+        }
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
 
 module.exports = router;

@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { updateClosetSneaks_data, canEditClosetSneaks_data, destroyClosetSneaks_data, getClosetSneaks_dataById } = require('../db');
+const { updateClosetSneaks_data, destroyClosetSneaks_data, getClosetSneaks_dataById } = require("../db/helpers/closets", "../db/helpers/sneaks_data");
 const client = require('../db/client');
 const { requireCustomer, requiredNotSent } = require('./utils')
 
 
 
 // PATCH /api/closet_activities/:closetSneaks_data_id
-router.patch('/:closetSneaks_data_id', requireCustomer, requiredNotSent({requiredParams: ['count', 'duration'], atLeastOne: true}), async (req, res, next) => {
+router.patch('/:closetSneaks_data_id', requireCustomer, requiredNotSent({requiredParams: ['name', 'product_type'], atLeastOne: true}), async (req, res, next) => {
   try {
-    const {count, duration} = req.body;
+    const {name, product_type} = req.body;
     const {closetSneaks_data_id} = req.params;
     const closetSneaks_dataToUpdate = await getClosetSneaks_dataById(closetSneaks_data_id);
     if(!closetSneaks_dataToUpdate) {
@@ -22,7 +22,7 @@ router.patch('/:closetSneaks_data_id', requireCustomer, requiredNotSent({require
         res.status(403);
         next({name: "Unauthorized", message: "You cannot edit this closet_sneaks_data!"});
       } else {
-        const updatedClosetSneaks_data = await updateClosetSneaks_data({id: req.params.closetSneaks_data_id, count, duration})
+        const updatedClosetSneaks_data = await updateClosetSneaks_data({id: req.params.closetSneaks_data_id, name, product_type})
         res.send(updatedClosetSneaks_data);
       }
     }

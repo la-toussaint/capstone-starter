@@ -102,26 +102,26 @@ export const fetchProfile = async (token) => {
   }
 };
 
-export const addToCloset = async (token, username) => {
-  try {
-    const response = await fetch(
-      `http://localhost:3000/api/closet_sneaks_data`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: "JSON",
-      }
-    );
-    const result = await response.json();
-    console.log(result);
-    return result;
-  } catch (error) {
-    console.error(error);
-  }
-};
+// export const addToCloset = async (token, username) => {
+//   try {
+//     const response = await fetch(
+//       `http://localhost:3000/api/closet_sneaks_data`,
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`,
+//         },
+//         body: "JSON",
+//       }
+//     );
+//     const result = await response.json();
+//     console.log(result);
+//     return result;
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
 export default function RenderSelectedProfile(customer_id, token) {
   const fetchSingleCustomer = async (customer_id, token) => {
@@ -153,6 +153,8 @@ export default function RenderSelectedProfile(customer_id, token) {
 	<p>${customers.fav_brand}</p>
 	<p>${customers.token}</p>
 	<p>${customers.sneaks_data_id}</p>`;
+  (<p>${customers.costumes_data_id}</p>)`;
+	<p>${customers.closet_id}</p>`;
   customersContainer.appendChild(usersCard);
 
   const [customers, setCustomers] = useState({});
@@ -192,8 +194,12 @@ export default function RenderSelectedProfile(customer_id, token) {
         {customers.fav_brand}
       </p>
       <p>
-        <b>Posts: </b>
-        {customers.closetSneaks_data_id}
+        <b>Closet: </b>
+        {customers.closet_id ? closetSneaks_data_id : closetCostumes_data_id}
+      </p>
+      <p>
+        <b>Closet: </b>
+        {customers.closet_id ? closetCostumes_data_id : closetSneaks_data_id}
       </p>
     </div>
   );
@@ -218,30 +224,30 @@ export async function SingleProfile(username) {
   return closet;
 }
 
-export async function makePost(
-  product_title,
-  product_price,
-  product_url,
-  product_photo
-) {
-  try {
-    const response = await fetch(`http://localhost:3000/api/sneaks_data`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        post: { product_title, product_price, product_url, product_photo },
-      }),
-    });
-    const result = await response.json();
-    console.log(result);
-    return result;
-  } catch (error) {
-    console.error(error);
-  }
-}
+// export async function makePost(
+//   product_title,
+//   product_price,
+//   product_url,
+//   product_photo
+// ) {
+//   try {
+//     const response = await fetch(`http://localhost:3000/api/sneaks_data`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify({
+//         post: { product_title, product_price, product_url, product_photo },
+//       }),
+//     });
+//     const result = await response.json();
+//     console.log(result);
+//     return result;
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
 
 export const fetchAllSneaks_data = async () => {
   try {
@@ -253,7 +259,17 @@ export const fetchAllSneaks_data = async () => {
   }
 };
 
-export const photoBackground = async (sneaks_data_id, fields) => {
+export const fetchAllCostumes_data = async () => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/costumes_data`);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const sneaksPhotoBackground = async (sneaks_data_id, fields) => {
   if (!product_photo || !sneaks_data_id) {
     return null;
   }
@@ -268,6 +284,26 @@ export const photoBackground = async (sneaks_data_id, fields) => {
     const result = updatedSneaksData;
 
     return updatedSneaksData;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const costumePhotoBackground = async (sneaks_data_id, fields) => {
+  if (!product_photo || !sneaks_data_id) {
+    return null;
+  }
+  try {
+    const customerSearch = await fetch(
+      `https://real-time-amazon-data.p.rapidapi.com/search`
+    );
+    let rm = new RemoveBackground();
+    const input = product_photo.rm;
+    const output = await removedBackground.input;
+    const removedBackground = costumesData.product_photo;
+    const result = updatedCostumesData;
+
+    return updatedCostumesData;
   } catch (error) {
     throw error;
   }
@@ -312,7 +348,7 @@ export const newClosetSneaks_data = async (
   }
 };
 
-export const deleteClosetSneaks_Data = async (
+export const deleteClosetSneaks_data = async (
   closet_id,
   closetSneaks_data_id,
   sneaks_data_id
@@ -330,6 +366,75 @@ export const deleteClosetSneaks_Data = async (
           closetSneaks_data_id: {
             closet_id,
             sneaks_data_id,
+          },
+        }),
+      }
+    );
+    const result = await response.json();
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const newClosetCostumes_data = async (
+  closetCostumes_data,
+  closet_id,
+  costumes_data_id,
+  costumes_data,
+  product_title,
+  product_price,
+  product_url,
+  product_photo
+) => {
+  try {
+    const newClosetCostumes_data = await add_newClosetCostumes_data(
+      `http://localhost:3000/api/closet_costumes_data/:closet_costumes_data_id`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          closetCostumes_data,
+          costumes_data_id,
+          costumes_data: {
+            product_title,
+            product_price,
+            product_url,
+            product_photo,
+          },
+        }),
+      }
+    );
+    const result = await response.json();
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteClosetCostumes_data = async (
+  closet_id,
+  closetCostumes_data_id,
+  costumes_data_id
+) => {
+  try {
+    const closetCostumes_data_id = await axios.patch(
+      `http://localhost:3000/api/closet_costumes_data`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          closetCostumes_data_id: {
+            closet_id,
+            costumes_data_id,
           },
         }),
       }

@@ -20,7 +20,7 @@ async function getClosetById(closet_id) {
   }
 }
 
-async function getClosetsWithoutSneaks_data() {
+async function getClosetsWithoutProductData() {
   try {
     const { rows } = await client.query(`
     SELECT * FROM closets;
@@ -33,11 +33,11 @@ async function getClosetsWithoutSneaks_data() {
 async function getAllClosets() {
   try {
     const { rows: closets } = await client.query(`
-    SELECT closets.*, customers.username AS "creatorName"
+    SELECT closets.*, customers.username AS "creatorId"
     FROM closets
     JOIN customers ON closets."creatorId" = customer_id 
     `);
-    return attachSneaks_dataToClosets(closets);
+    return attachToClosets(closets) ? sneaks_data : costumes_data;
   } catch (error) {
     throw error;
   }
@@ -47,14 +47,14 @@ async function getAllClosetsByUser({ username }) {
     const customer = await getCustomersByUsername(username);
     const { rows: closets } = await client.query(
       `
-    SELECT closets.*, customers.username AS "creatorName"
+    SELECT closets.*, customers.username AS "creatorId"
     FROM closets
     JOIN customers ON closets."creatorId" = customer_id 
     WHERE "creatorId" = $1
     `,
-      [customer_id]
+      [creatorId]
     );
-    return attachSneaks_dataToClosets(closets);
+    return attachToClosets(closets) ? sneaks_data : costumes_data;
   } catch (error) {
     throw error;
   }
@@ -64,7 +64,7 @@ async function getTemplateClosetsByCustomer({ username }) {
     const customer = await getCustomersByUsername(username);
     const { rows: closets } = await client.query(
       `
-    SELECT closets.*, customers.username AS "creatorName"
+    SELECT closets.*, customers.username AS "creatorId"
     FROM closets
     JOIN customers ON closets."creatorId" = customer_id 
     WHERE "creatorId" = $1
@@ -72,7 +72,7 @@ async function getTemplateClosetsByCustomer({ username }) {
     `,
       [customer_id]
     );
-    return attachSneaks_dataToClosets(closets);
+    return attachToClosets(closets) ? sneaks_data : costumes_data;
   } catch (error) {
     throw error;
   }
@@ -80,12 +80,12 @@ async function getTemplateClosetsByCustomer({ username }) {
 async function getAllTemplateClosets() {
   try {
     const { rows: closets } = await client.query(`
-    SELECT closets.*, customers.username AS "creatorName"
+    SELECT closets.*, customers.username AS "creatorId"
     FROM closets
     JOIN customers ON closets."creatorId" = customer_id
     WHERE "isTemplate" = true
     `);
-    return attachSneaks_dataToClosets(closets);
+    return attachToClosets(closets) ? sneaks_data : costumes_data;
   } catch (error) {
     throw error;
   }
@@ -125,11 +125,11 @@ Profile page houses:
 
 
 */
-async function getTemplateClosetsBySneaks_Data({ closets_id }) {
+async function getTemplateClosetsBySneaks_data({ closet_id }) {
   try {
     const { rows: closets } = await client.query(
       `
-      SELECT closets.*, customers.username AS "creatorName"
+      SELECT closets.*, customers.username AS "creatorId"
       FROM closets
       JOIN customers ON closets."creatorId" = customer_id
       JOIN closet_sneaks_data ON closet_sneaks_data."closetId" = closets.closet_id
@@ -144,8 +144,28 @@ async function getTemplateClosetsBySneaks_Data({ closets_id }) {
   }
 }
 
-async function createCloset({
+async function getTemplateClosetsByCostumes_data({ closet_id }) {
+  try {
+    const { rows: closets } = await client.query(
+      `
+		SELECT closets.*, customers.username AS "creatorId"
+		FROM closets
+		JOIN customers ON closets."creatorId" = customer_id
+		JOIN closet_costumes_data ON closet_costumes_data."closetId" = closets.closet_id
+		WHERE closets."isTemplate" = true
+		AND closet_costumes_data."costumes_dataId" = $1;
+	  `,
+      [sneaks_data_id]
+    );
+    return attachCostumes_dataToClosets(closets);
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function createClosets({
   creatorId,
+  name,
   isTemplate,
   background,
   product_type,
@@ -155,11 +175,11 @@ async function createCloset({
       rows: [closet],
     } = await client.query(
       `
-        INSERT INTO closets ("creatorId", "isTemplate", "background", "product_type")
-        VALUES($1, $2, $3, $4)
+        INSERT INTO closets ("creatorId", "name", "isTemplate", "background", "product_type")
+        VALUES($1, $2, $3, $4, $5)
         RETURNING *;
     `,
-      [creatorId, isTemplate, background, product_type]
+      [creatorId, name, isTemplate, background, product_type]
     );
 
     return closet;
@@ -168,7 +188,7 @@ async function createCloset({
   }
 }
 
-async function updateCloset({ closets_id, ...fields }) {
+async function updateCloset({ closet_id, ...fields }) {
   try {
     const toUpdate = {};
     for (let column in fields) {
@@ -180,7 +200,7 @@ async function updateCloset({ closets_id, ...fields }) {
         `
           UPDATE closets 
           SET ${util.dbFields(toUpdate).insert}
-          WHERE closets_id=${closets_id}
+          WHERE closet_id=${closet_id}
           RETURNING *;
       `,
         Object.values(toUpdate)
@@ -192,24 +212,25 @@ async function updateCloset({ closets_id, ...fields }) {
     throw error;
   }
 }
-async function destroyCloset(id) {
+
+async function destroyClosetSneaks_data(id) {
   try {
     await client.query(
       `
         DELETE FROM closet_sneaks_data 
-        WHERE "closets_id" = $1;
+        WHERE "closet_id" = $1;
     `,
-      [closets_id]
+      [closet_id]
     );
     const {
       rows: [closet],
     } = await client.query(
       `
         DELETE FROM closets 
-        WHERE closets_id = $1
+        WHERE closet_id = $1
         RETURNING *
     `,
-      [closets_id]
+      [closet_id]
     );
     return closet;
   } catch (error) {
@@ -217,15 +238,41 @@ async function destroyCloset(id) {
   }
 }
 
+async function destroyClosetCostumes_data(id) {
+  try {
+    await client.query(
+      `
+		  DELETE FROM closet_costumes_data 
+		  WHERE "closet_id" = $1;
+	  `,
+      [closet_id]
+    );
+    const {
+      rows: [closet],
+    } = await client.query(
+      `
+		  DELETE FROM closets 
+		  WHERE closet_id = $1
+		  RETURNING *
+	  `,
+      [closet_id]
+    );
+    return closet;
+  } catch (error) {
+    throw error;
+  }
+}
 module.exports = {
   getClosetById,
-  getClosetsWithoutSneaks_data,
+  getClosetsWithoutProductData,
   getAllClosets,
   getAllTemplateClosets,
   getAllClosetsByUser,
   getTemplateClosetsByCustomer,
-  getTemplateClosetsBySneaks_Data,
-  createCloset,
+  getTemplateClosetsBySneaks_data,
+  getTemplateClosetsByCostumes_data,
+  createClosets,
   updateCloset,
-  destroyCloset,
+  destroyClosetSneaks_data,
+  destroyClosetCostumes_data,
 };
