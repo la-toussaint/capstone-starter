@@ -50,7 +50,7 @@ async function createSneaks_data({
       rows: [sneak],
     } = await client.query(
       `
-        INSERT INTO sneaks_data(asin, product_title, product_original_price, product_star_rating, product_num_ratings, product_url, product_photo, product_num_offers, product_minimum_offer_price, is_best_seller, is_prime, climate_pledge_friendly) 
+        INSERT INTO sneaks_data(asin, product_title, product_original_price, product_star_rating, product_num_ratings, product_url, product_photo, product_num_offers, product_minimum_offer_price, is_best_seller, is_prime, climate_pledge_friendly)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         RETURNING *;
         `,

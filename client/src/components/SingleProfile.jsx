@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import NavBar from "./Navbar";
 import { useState } from "react";
-import { fetchProfile, deleteClosetSneaks_Data, deleteClosetCostumes_Data } from "../API/ajax-helpers";
+import { fetchProfile, deleteClosetSneaks_data } from "../API/ajax-helpers";
 import { setProfile, setToken } from "./redux/index";
 import React from "react";
 
@@ -11,7 +11,7 @@ export default function ProfileLog() {
   //   const token = useSelector((state) => state.auth.token);
   const [isOpen, setIsOpen] = useState(true);
   const [products, productList] = useState([]);
-  const [removeProductFromProfile] = useState("");
+  const [closet_sneaks_data, deleteClosetSneaks_data] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [customers, setProfile] = useState(null);
   const [token, setToken] = useState(null);

@@ -5,7 +5,7 @@ export const authReducer = createSlice({
   initialState: {
     token: null,
     isLoggedIn: false,
-    users: null,
+    customers: null,
   },
   reducers: {
     setToken: (state, action) => ({
@@ -16,16 +16,21 @@ export const authReducer = createSlice({
     }),
     setProfile: (state, action) => ({
       ...state,
-      users: action.payload,
+      customers: action.payload,
       //   isLoggedIn:
     }),
-    deletePostFromProfile: (state, action) => ({
+    deleteClosetProduct_data: (state, action) => ({
       ...state,
       token: action.payload,
       isLoggedIn: Boolean(action.payload),
     }),
+	addClosetProduct_data: (state, action) => ({
+		...state,
+		token: action.payload,
+		isLoggedIn: Boolean(action.payload),
+	  }),
   },
 });
 
-export const { setToken, setProfile, deletePostFromProfile } =
+export const { setToken, setProfile, deleteClosetProduct_data, addClosetProduct_data } =
   authReducer.actions;

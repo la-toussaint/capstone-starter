@@ -142,7 +142,7 @@ describe("Database", () => {
         expect(routine).toEqual(
           expect.objectContaining({
             id: expect.any(Number),
-            creatorId: expect.any(Number),
+            creator_id: expect.any(Number),
             isTemplate: expect.any(Boolean),
             name: expect.any(String),
             goal: expect.any(String),
@@ -178,7 +178,7 @@ describe("Database", () => {
         expect(routine).toEqual(
           expect.objectContaining({
             id: expect.any(Number),
-            creatorId: expect.any(Number),
+            creator_id: expect.any(Number),
             isTemplate: expect.any(Boolean),
             name: expect.any(String),
             goal: expect.any(String),
@@ -216,14 +216,14 @@ describe("Database", () => {
         expect(routine).toEqual(
           expect.objectContaining({
             id: expect.any(Number),
-            creatorId: expect.any(Number),
+            creator_id: expect.any(Number),
             isTemplate: expect.any(Boolean),
             name: expect.any(String),
             goal: expect.any(String),
             activities: expect.any(Array),
           })
         );
-        expect(routine.creatorId).toBe(user.id);
+        expect(routine.creator_id).toBe(user.id);
       });
       it("includes username, from users join, aliased as creatorName", async () => {
         expect(routine).toEqual(
@@ -254,14 +254,14 @@ describe("Database", () => {
         expect(routine).toEqual(
           expect.objectContaining({
             id: expect.any(Number),
-            creatorId: expect.any(Number),
+            creator_id: expect.any(Number),
             isTemplate: expect.any(Boolean),
             name: expect.any(String),
             goal: expect.any(String),
             activities: expect.any(Array),
           })
         );
-        expect(routine.creatorId).toBe(user.id);
+        expect(routine.creator_id).toBe(user.id);
         expect(routine.isTemplate).toBe(true);
       });
       it("includes username, from users join, aliased as creatorName", async () => {
@@ -293,7 +293,7 @@ describe("Database", () => {
         expect(routine).toEqual(
           expect.objectContaining({
             id: expect.any(Number),
-            creatorId: expect.any(Number),
+            creator_id: expect.any(Number),
             isTemplate: expect.any(Boolean),
             name: expect.any(String),
             goal: expect.any(String),
@@ -324,7 +324,7 @@ describe("Database", () => {
     describe("createRoutine", () => {
       it("creates and returns the new routine", async () => {
         routineToCreateAndUpdate = await createRoutine({
-          creatorId: 2,
+          creator_id: 2,
           isTemplate: true,
           name: "BodyWeight Day",
           goal: "Do workouts that can be done from home, no gym or weights required.",

@@ -52,14 +52,8 @@ export default function App(customers, username, password, result, isLoggedIn) {
       <Routes>
 	  <Route
           path="/my-closet"
-          element={
-            <AuthRoute token={token}>
-              <Closet />
-            </AuthRoute>
-          }
-        />
-        {/* </AuthRoute> */}
-        <Route
+          element={<Closet />}/>        
+		  <Route
           path="/all-carousel"
           element={
             <AuthRoute token={token}>
@@ -72,7 +66,7 @@ export default function App(customers, username, password, result, isLoggedIn) {
           path="/"
           element={
             <AuthRoute token={token}>
-              <AllCards />
+              <NavBar />
             </AuthRoute>
           }
         />

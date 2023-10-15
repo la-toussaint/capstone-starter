@@ -4,9 +4,9 @@ import { TweenMax, Power2, TimelineLite } from "gsap";
 import $ from "jquery";
 import carousel from "gsap";
 import {
-  fetchAllSneaks_data,
-  sneaksPhotoBackground,
-  newClosetSneaks_data,
+  fetchAllCostumes_data,
+  costumesPhotoBackground,
+  addClosetCostumes_data,
 } from "../API/ajax-helpers";
 import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
@@ -18,11 +18,11 @@ export default function MyCloset() {
   const [error, setError] = useState(null);
   const [isFlipped, setFlipped] = useState({});
   const [moveCarouselHorizontally, setMoveCarouselHorizontally] = useState({});
-
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [searchParam, setSearchParam] = useState(null);
 
   const renderImages = () => {
-    sneaksPhotoBackground()
+    costumesPhotoBackground()
       .then((crossoriginMeAvailable) => {
         return imageUrls.map((imageUrl, index) => (
           <img
@@ -34,6 +34,7 @@ export default function MyCloset() {
             alt={`Image ${index}`}
             key={`image-${index}`}
             type="image/png"
+            crossorigin="require-corp"
           />
         ));
       })
@@ -41,33 +42,45 @@ export default function MyCloset() {
         console.error("Error checking crossorigin.me availability:", error);
       });
   };
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  useEffect(() => {
-    fetchAllSneaks_data
-      .then((results) => {
-        productList(results);
-      })
-      .catch((error) => {
-        setError(error);
-      });
-  }, []);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const results = await fetchAllCostumes_data();
+        productList(results);
+      } catch (error) {
+        setError(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // This useEffect filters products when searchParam changes
+  useEffect(() => {
     const filteredProducts = products.filter((p) => {
-      return p?.sneaks_data.toLowerCase().includes(searchParam);
+      return p?.costumes_data.toLowerCase().includes(searchParam);
     });
     productList(filteredProducts);
   }, [searchParam]);
 
   const handleClick = (direction) => {
-    setMoveCarouselHorizontally({
-      ...moveCarouselHorizontally(prev),
-      ...moveCarouselHorizontally(next),
-    });
+    if (direction === "next") {
+      // Increase addX value and set moveCarouselHorizontally
+      addX += 360;
+      setMoveCarouselHorizontally("next");
+    } else if (direction === "prev") {
+      // Decrease addX value and set moveCarouselHorizontally
+      addX -= 360;
+      setMoveCarouselHorizontally("prev");
+    }
+    if (isLoggedIn) {
+      addClosetCostumes_data({ ...[costumes_data_id] });
+    }
   };
 
   return (
-    <div className="product-card-container">
+    <div className="mycloset-background-container">
       <SearchBar setSearchParam={setSearchParam} />
       <CustomCarousel
         images={products.map((product) => product.product_photo)}
@@ -75,44 +88,96 @@ export default function MyCloset() {
     </div>
   );
 
+  //   function CustomCarousel({ images }) {
+  //     var w, container, carousel, item, radius, itemLength, rY, ticker, fps;
+
+  //     var addX = 0;
+
+  //     let fps_counter = {
+  //       tick: function () {},
+  //       times: [],
+  //       span: 20,
+  //     };
+  //     const counter = Object.create(fps_counter);
+
+  //     $(document).ready(init);
+
+  //     function init() {
+  //       w = $(window);
+  //       container = $("#contentContainer");
+  //       carousel = $("#carouselContainer");
+  //       item = $(".carouselItem");
+  //       itemLength = $(".carouselItem").length;
+  //       rY = 360 / itemLength;
+  //       fps = $("#fps");
+  //       radius = Math.round(250);
+
+  //       TweenMax.set(container, { perspective: 600 });
+  //       TweenMax.set(carousel, { z: -radius });
+
+  //       for (var i = 0; i < itemLength; i++) {
+  //         var $item = item.eq(i);
+  //         var $block = $item.find(".carouselItemInner");
+
+  //         TweenMax.set($item, {
+  //           rotationY: rY * i,
+  //           z: radius,
+  //           transformOrigin: "50% 50% " + -radius + "px",
+  //           ease: Quint.easeOut,
+  //         });
+
+  //         animateIn($item, $block);
+  //       }
+  //     }
+
+  //     function animateIn($item, $block) {
+  //       // ... (your animateIn function remains the same)
+  //     }
+
+  //     // Function to move the carousel horizontally
+
+  //     TweenMax.to(carousel, 1, {
+  //       rotationY: addX,
+  //       easeOutQuint: function (x) {
+  //         return 1 - pow(1 - x, 5);
+  //       },
+  //     });
+  //   }
   function CustomCarousel({ images }) {
     var w, container, carousel, item, radius, itemLength, rY, ticker, fps;
+
     var addX = 0;
 
-    var fps_counter = {
-      tick: function () {
-        // ... (your fps_counter code remains the same)
-      },
+    let fps_counter = {
+      tick: function () {},
       times: [],
       span: 20,
     };
-    var counter = Object.create(fps_counter);
+    const counter = Object.create(fps_counter);
 
     $(document).ready(init);
 
     function init() {
       w = $(window);
-      container = $("#contentContainer");
-      carousel = $("#carouselContainer");
+      TweenMax.set((container = $("#contentContainer")), { perspective: 600 });
+      TweenMax.set((carousel = $("#carouselContainer")), { z: -radius });
       item = $(".carouselItem");
       itemLength = $(".carouselItem").length;
-      fps = $("#fps");
-      rY = 360 / itemLength;
-      radius = Math.round(250); // Adjust the radius as needed
 
-      // Set container 3d props
-      TweenMax.set(container, { perspective: 600 });
-      TweenMax.set(carousel, { z: -radius });
-
-      // Create carousel item props
       for (var i = 0; i < itemLength; i++) {
         var $item = item.eq(i);
         var $block = $item.find(".carouselItemInner");
+        rY = 360 / itemLength;
+        fps = $("#fps");
+        radius = Math.round(250);
 
         TweenMax.set($item, {
           rotationY: rY * i,
           z: radius,
           transformOrigin: "50% 50% " + -radius + "px",
+          easeOutQuint: function (x) {
+            return 1 - pow(1 - x, 5);
+          },
         });
 
         animateIn($item, $block);
@@ -123,31 +188,13 @@ export default function MyCloset() {
       // ... (your animateIn function remains the same)
     }
 
-    // Function to move the carousel horizontally
-    function moveCarouselHorizontally(direction) {
-      if (direction === "next") {
-        addX += 360; // Adjust the value as needed to control the horizontal movement
-      } else if (direction === "prev") {
-        addX -= 360; // Adjust the value as needed to control the horizontal movement
-      }
-
-      TweenMax.to(carousel, 1, { rotationY: addX, ease: Quint.easeOut });
-    }
-
-    $("#prevButton").click(function () {
-      moveCarouselHorizontally("prev");
+    TweenMax.to(carousel, 1, {
+      rotationY: addX,
+      easeOutQuint: function (x) {
+        return 1 - pow(1 - x, 5);
+      },
     });
-
-    $("#nextButton").click(function () {
-      moveCarouselHorizontally("next");
-    });
-    const handleClick = setMoveCarouselHorizontally;
-    // Function to calculate the FPS and update the isTemplate
   }
-
-  // Ticker for updating FPS
-  // You can use any carousel library or create your custom carousel component.
-  // isTemplate only the image prop in the carousel.
 
   return (
     <div id="contentContainer" className="trans3d">
@@ -159,8 +206,26 @@ export default function MyCloset() {
             key={`carousel-item-${index}`}
           >
             <div className="carouselItemInner trans3d">
-              <img src={image} alt={`Image ${index}`} />
+              <img src={product_photo} alt={`Image ${product_title}`} />
             </div>
+            <button id="nextButton" onClick={() => handleClick("next")}>
+              Next
+            </button>
+
+            <button id="prevButton" onClick={() => handleClick("prev")}>
+              Prev
+            </button>
+
+            {isLoggedIn && (
+              <div>
+                <button
+                  className="add-click"
+                  onClick={() => addClosetCostumes_data(costumes_data_id)}
+                >
+                  Add to Your Closet
+                </button>
+              </div>
+            )}
           </figure>
         ))}
       </section>

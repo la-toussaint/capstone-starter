@@ -10,7 +10,7 @@ const {
   getClosetSneaks_dataByCloset,
   addCostumes_dataToCloset,
   getClosetCostumes_dataByCloset,
-} = require("../db/helpers/closets", "../db/helpers/costumes_data", "../db/helpers/sneaks_data");;
+} = require("../db/helpers/closets", "../db/helpers/costumes_data", "../db/helpers/sneaks_data");
 const { requireCustomer, requiredNotSent } = require("./utils");
 
 // GET /api/closets
@@ -33,7 +33,7 @@ router.post(
     try {
       const { name, product_type } = req.body;
       const createdCloset = await createCloset({
-        creatorId: req.customer_id,
+        creator_id: req.customer_id,
         name,
         product_type,
         isTemplate: req.body.isTemplate,
@@ -70,7 +70,7 @@ router.patch(
           name: "NotFound",
           message: `No closet by ID ${closet_id}`,
         });
-      } else if (req.customer_id !== closetToUpdate.creatorId) {
+      } else if (req.customer_id !== closetToUpdate.creator_id) {
         res.status(403);
         next({
           name: "WrongCustomerError",
@@ -81,7 +81,7 @@ router.patch(
         const updatedCloset = await updateCloset({
           id: "closet_id",
           name,
-		  background,
+          background,
           product_type,
           isTemplate,
         });
@@ -110,7 +110,7 @@ router.delete("/:closet_id", requireCustomer, async (req, res, next) => {
         name: "NotFound",
         message: `No closet by ID ${closet_id}`,
       });
-    } else if (req.customer_id !== closetToUpdate.creatorId) {
+    } else if (req.customer_id !== closetToUpdate.creator_id) {
       res.status(403);
       next({
         name: "WrongCustomerError",

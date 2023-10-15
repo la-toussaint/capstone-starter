@@ -33,9 +33,9 @@ async function getClosetsWithoutProductData() {
 async function getAllClosets() {
   try {
     const { rows: closets } = await client.query(`
-    SELECT closets.*, customers.username AS "creatorId"
+    SELECT closets.*, customers.username AS "creator_id"
     FROM closets
-    JOIN customers ON closets."creatorId" = customer_id 
+    JOIN customers ON closets."creator_id" = customer_id 
     `);
     return attachToClosets(closets) ? sneaks_data : costumes_data;
   } catch (error) {
@@ -47,12 +47,12 @@ async function getAllClosetsByUser({ username }) {
     const customer = await getCustomersByUsername(username);
     const { rows: closets } = await client.query(
       `
-    SELECT closets.*, customers.username AS "creatorId"
+    SELECT closets.*, customers.username AS "creator_id"
     FROM closets
-    JOIN customers ON closets."creatorId" = customer_id 
-    WHERE "creatorId" = $1
+    JOIN customers ON closets."creator_id" = customer_id 
+    WHERE "creator_id" = $1
     `,
-      [creatorId]
+      [creator_id]
     );
     return attachToClosets(closets) ? sneaks_data : costumes_data;
   } catch (error) {
@@ -64,10 +64,10 @@ async function getTemplateClosetsByCustomer({ username }) {
     const customer = await getCustomersByUsername(username);
     const { rows: closets } = await client.query(
       `
-    SELECT closets.*, customers.username AS "creatorId"
+    SELECT closets.*, customers.username AS "creator_id"
     FROM closets
-    JOIN customers ON closets."creatorId" = customer_id 
-    WHERE "creatorId" = $1
+    JOIN customers ON closets."creator_id" = customer_id 
+    WHERE "creator_id" = $1
     AND "isTemplate" = true
     `,
       [customer_id]
@@ -80,9 +80,9 @@ async function getTemplateClosetsByCustomer({ username }) {
 async function getAllTemplateClosets() {
   try {
     const { rows: closets } = await client.query(`
-    SELECT closets.*, customers.username AS "creatorId"
+    SELECT closets.*, customers.username AS "creator_id"
     FROM closets
-    JOIN customers ON closets."creatorId" = customer_id
+    JOIN customers ON closets."creator_id" = customer_id
     WHERE "isTemplate" = true
     `);
     return attachToClosets(closets) ? sneaks_data : costumes_data;
@@ -106,14 +106,14 @@ Profile page houses:
   => closet templates are public
           [
             {
-            creatorId: "bruno",
+            creator_id: "bruno",
             name: "Kickstand",
             background: "subway tiles",
             product_type: "sneaks_data",
             isTemplate: true,
           },
           {
-            creatorId: "bruno",
+            creator_id: "bruno",
             name: "boo!",
             background: "subway tiles",
             product_type: "halloween",
@@ -129,9 +129,9 @@ async function getTemplateClosetsBySneaks_data({ closet_id }) {
   try {
     const { rows: closets } = await client.query(
       `
-      SELECT closets.*, customers.username AS "creatorId"
+      SELECT closets.*, customers.username AS "creator_id"
       FROM closets
-      JOIN customers ON closets."creatorId" = customer_id
+      JOIN customers ON closets."creator_id" = customer_id
       JOIN closet_sneaks_data ON closet_sneaks_data."closetId" = closets.closet_id
       WHERE closets."isTemplate" = true
       AND closet_sneaks_data."sneaks_dataId" = $1;
@@ -148,9 +148,9 @@ async function getTemplateClosetsByCostumes_data({ closet_id }) {
   try {
     const { rows: closets } = await client.query(
       `
-		SELECT closets.*, customers.username AS "creatorId"
+		SELECT closets.*, customers.username AS "creator_id"
 		FROM closets
-		JOIN customers ON closets."creatorId" = customer_id
+		JOIN customers ON closets."creator_id" = customer_id
 		JOIN closet_costumes_data ON closet_costumes_data."closetId" = closets.closet_id
 		WHERE closets."isTemplate" = true
 		AND closet_costumes_data."costumes_dataId" = $1;
@@ -164,7 +164,7 @@ async function getTemplateClosetsByCostumes_data({ closet_id }) {
 }
 
 async function createClosets({
-  creatorId,
+  creator_id,
   name,
   isTemplate,
   background,
@@ -175,11 +175,11 @@ async function createClosets({
       rows: [closet],
     } = await client.query(
       `
-        INSERT INTO closets ("creatorId", "name", "isTemplate", "background", "product_type")
+        INSERT INTO closets (creator_id, name, isTemplate, background, product_type)
         VALUES($1, $2, $3, $4, $5)
         RETURNING *;
     `,
-      [creatorId, name, isTemplate, background, product_type]
+      [creator_id, name, isTemplate, background, product_type]
     );
 
     return closet;

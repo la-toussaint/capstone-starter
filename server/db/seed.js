@@ -1,7 +1,11 @@
 const client = require("./client");
+//   DROP TABLE IF EXISTS costumes_data;
+//   DROP TABLE IF EXISTS users;
+//   DROP TABLE IF EXISTS customers;
+//   DROP TABLE IF EXISTS closets;
 
 const { createSneaks_data } = require("./helpers/sneaks_data");
-const { createcreateCostumes_data } = require("./helpers/costumes_data");
+const { createCostumes_data } = require("./helpers/costumes_data");
 const { createCustomers } = require("./helpers/customers");
 const { createClosets } = require("./helpers/closets");
 const {
@@ -14,13 +18,13 @@ const dropTables = async () => {
   try {
     console.log("Starting to drop tables");
     await client.query(`
-		  DROP TABLE IF EXISTS sneaks_data;
-		  DROP TABLE IF EXISTS costumes_data;
-		  DROP TABLE IF EXISTS users;
-		  DROP TABLE IF EXISTS customers;
-		  DROP TABLE IF EXISTS closets;
-		  
-		  `);
+		DROP TABLE IF EXISTS closetProduct_data CASCADE;
+		DROP TABLE IF EXISTS sneaks_data;
+		DROP TABLE IF EXISTS costumes_data;  
+		DROP TABLE IF EXISTS users;
+		DROP TABLE IF EXISTS customers;
+		DROP TABLE IF EXISTS closets;
+	  `);
     console.log("Tables dropped!");
   } catch (error) {
     console.log("Error dropping tables");
@@ -75,12 +79,33 @@ const createTables = async () => {
 			
 			CREATE TABLE closets (
 				closet_id SERIAL PRIMARY KEY,
-				name varchar(255),
-				creatorId varchar(255),
+				name varchar(1024),
+				creator_id varchar(1024),
 				isTemplate BOOLEAN, 
-				background varchar(255),
-				product_type varchar(255)
-				);`);
+				background varchar (1024),
+				product_type varchar(1024)
+				);
+				
+		
+				CREATE TABLE closetProduct_data (
+					closetProduct_data_id SERIAL PRIMARY KEY, 
+					closet_id INT REFERENCES closets(closet_id),
+					product_data_id INT,
+					product_type VARCHAR(255),
+					name VARCHAR(255),
+					UNIQUE ("closet_id", "product_data_id")
+				);
+				
+				ALTER TABLE closetProduct_data
+				ADD CONSTRAINT fk_sneaks_data FOREIGN KEY (product_data_id) REFERENCES sneaks_data(sneaks_data_id);
+				
+
+				
+				ALTER TABLE closetProduct_data
+				ADD CONSTRAINT fk_costumes_data FOREIGN KEY (product_data_id) REFERENCES costumes_data(costumes_data_id);
+				
+				
+				`);
 
     console.log("Tables built!");
   } catch (error) {
@@ -94,7 +119,6 @@ const createInitialSneaks_data = async () => {
       console.error("sneaks_data is not defined or is null.");
       return;
     }
-
     const sneaksDataArray = Object.values(sneaks_data); // Convert object to an array of values
     for (const sneak of sneaksDataArray) {
       await createSneaks_data(sneak);
@@ -144,13 +168,14 @@ const rebuildDb = async () => {
   try {
     // ACTUALLY connect to my local database
     client.connect();
-    // Run our functions
     await dropTables();
+    // Create tables first
     await createTables();
 
     // Generating starting data
     console.log("starting to seed...");
 
+    // Insert data after tables are created
     await createInitialSneaks_data();
     await createInitialCostumes_data();
     await createInitialCustomers();

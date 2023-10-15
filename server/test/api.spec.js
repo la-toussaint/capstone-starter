@@ -252,7 +252,7 @@ describe("API", () => {
     });
 
     describe("POST /routines (*)", () => {
-      it("Creates a new routine, with the creatorId matching the logged in customer", async () => {
+      it("Creates a new routine, with the creator_id matching the logged in customer", async () => {
         const { data: respondedRoutine } = await axios.post(
           `${API_URL}/api/routines`,
           routineToCreateAndUpdate,
@@ -262,7 +262,7 @@ describe("API", () => {
         expect(respondedRoutine.name).toEqual(routineToCreateAndUpdate.name);
         expect(respondedRoutine.goal).toEqual(routineToCreateAndUpdate.goal);
         expect(respondedRoutine.name).toEqual(routineToCreateAndUpdate.name);
-        expect(respondedRoutine.creatorId).toEqual(registeredCustomer.id);
+        expect(respondedRoutine.creator_id).toEqual(registeredCustomer.id);
         routineToCreateAndUpdate = respondedRoutine;
       });
       it("Requires logged in customer", async () => {
@@ -308,7 +308,7 @@ describe("API", () => {
       let newRoutine;
       it("Attaches a single activity to a routine.", async () => {
         newRoutine = await createRoutine({
-          creatorId: registeredCustomer.id,
+          creator_id: registeredCustomer.id,
           name: "Pull Ups",
           goal: "10 pull ups",
         });

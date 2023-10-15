@@ -8,7 +8,7 @@ export const BASE_URL_USER_REG = `http://localhost:3000/api/auth/register`;
 
 export default function Register({ setToken, setMessage }) {
   const [name, setName] = useState("");
-  const [fav_pokemon, setFav_pokemon] = useState("");
+  const [fav_brand, setFav_brand] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -34,7 +34,7 @@ export default function Register({ setToken, setMessage }) {
 
   return (
     <>
-      <h2 className="sign-up">New Customer Sign-Up</h2>
+      <h2 className="signup-background-container">New Customer Sign-Up</h2>
       {error && <p className="sign-up-error">{error}</p>}
       {successMessage && <p className="sign-up-success">{successMessage}</p>}
       <form className="sign-up-form" onSubmit={handleSubmit}>
@@ -69,10 +69,10 @@ export default function Register({ setToken, setMessage }) {
           <br />
         </label>
         <label>
-          Favorite Pokémon:
+          Favorite Brand:
           <br />
           <input
-            placeholder="favorite pokémon - optional"
+            placeholder="favorite brand - optional"
             optional="true"
             value={fav_pokemon}
             onChange={(e) => setFav_pokemon(e.target.value)}

@@ -3,7 +3,10 @@ import { useState, useEffect } from "react";
 import {
   fetchAllSneaks_data,
   sneaksPhotoBackground,
-  newClosetSneaks_data,
+  addClosetSneaks_data,
+  deleteClosetSneaks_data,
+  addClosetCostumes_data,
+  deleteClosetCostumes_data,
 } from "../API/ajax-helpers";
 import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
@@ -15,21 +18,22 @@ function AllCards() {
   const [error, setError] = useState(null);
   const [isFlipped, setFlipped] = useState({});
   const [searchParam, setSearchParam] = useState(null);
-  const [newClosetSneaks_data, addNewClosetsSneaks_data] = useState({});
+  const [closetSneaks_data, addClosetSneaks_data] = useState({});
 
   const renderImages = () => {
     sneaksPhotoBackground()
       .then((crossoriginMeAvailable) => {
-        return imageUrls.map((imageUrl, index) => (
+        return imageUrls.map((imageUrl, id) => (
           <img
             src={
               crossoriginMeAvailable
                 ? `https://crossorigin.me/${imageUrl}`
                 : `https://cors-anywhere.herokuapp.com/${imageUrl}`
             }
-            alt={`Image ${index}`}
-            key={`image-${index}`}
+            alt={`Image-${index}`}
+            key={`image-${id}`}
             type="image/png"
+            crossOrigin="anonymous"
           />
         ));
       })
@@ -57,10 +61,10 @@ function AllCards() {
 
   const handleClick = (id) => {
     setFlipped({ ...isFlipped, [id]: !isFlipped[id] });
-    NewClosetsSneaks_data(...add, [closetSneaks_data_id]);
+    addClosetSneaks_data({ ...[sneaks_data_id] });
   };
   return (
-    <div className="product-card-container">
+    <div className="allcards-background-container">
       <SearchBar setSearchParam={setSearchParam} />
       {products.map((product, i) => {
         return (
@@ -73,7 +77,7 @@ function AllCards() {
                 <img
                   className="flip-front-img"
                   src={product.product_photo}
-                  alt={`${i + 1}`}
+                  alt={product.sneaks_data_id}
                 />
 
                 <div> {product.product_title}</div>
@@ -87,9 +91,7 @@ function AllCards() {
                 {isLoggedIn && (
                   <button
                     className="add"
-                    onClick={() =>
-                      addNewClosetSneaks_data(product.sneaks_data_id)
-                    }
+                    onClick={() => addClosetSneaks_data(product.sneaks_data_id)}
                   >
                     Add to Your Closet
                   </button>

@@ -224,30 +224,33 @@ export async function SingleProfile(username) {
   return closet;
 }
 
-// export async function makePost(
-//   product_title,
-//   product_price,
-//   product_url,
-//   product_photo
-// ) {
-//   try {
-//     const response = await fetch(`http://localhost:3000/api/sneaks_data`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify({
-//         post: { product_title, product_price, product_url, product_photo },
-//       }),
-//     });
-//     const result = await response.json();
-//     console.log(result);
-//     return result;
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
+export async function makeContact(
+	lastname,
+	firstname,
+	username,
+	email,
+	fav_brand,
+   query,
+   no_account
+) {
+  try {
+    const response = await fetch(`http://localhost:3000/api/sneaks_data`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        post: { product_title, product_price, product_url, product_photo },
+      }),
+    });
+    const result = await response.json();
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export const fetchAllSneaks_data = async () => {
   try {
@@ -289,7 +292,7 @@ export const sneaksPhotoBackground = async (sneaks_data_id, fields) => {
   }
 };
 
-export const costumePhotoBackground = async (sneaks_data_id, fields) => {
+export const costumesPhotoBackground = async (sneaks_data_id, fields) => {
   if (!product_photo || !sneaks_data_id) {
     return null;
   }
@@ -309,7 +312,7 @@ export const costumePhotoBackground = async (sneaks_data_id, fields) => {
   }
 };
 
-export const newClosetSneaks_data = async (
+export const addClosetSneaks_data = async (
   closetSneaks_data,
   closet_id,
   sneaks_data_id,
@@ -320,8 +323,8 @@ export const newClosetSneaks_data = async (
   product_photo
 ) => {
   try {
-    const newClosetSneaks_data = await add_newClosetSneaks_data(
-      `http://localhost:3000/api/closet_sneaks_data/:closet_sneaks_data_id`,
+    const addSneaks_dataToCloset = await addClosetSneaks_data(
+      `http://localhost:3000/api/closetSneaks_data/:closetSneaks_data_id`,
       {
         method: "POST",
         headers: {
@@ -355,7 +358,7 @@ export const deleteClosetSneaks_data = async (
 ) => {
   try {
     const closetSneaks_data_id = await axios.patch(
-      `http://localhost:3000/api/closet_sneaks_data`,
+      `http://localhost:3000/api/closetSneaks_data`,
       {
         method: "DELETE",
         headers: {
@@ -378,7 +381,7 @@ export const deleteClosetSneaks_data = async (
   }
 };
 
-export const newClosetCostumes_data = async (
+export const addClosetCostumes_data = async (
   closetCostumes_data,
   closet_id,
   costumes_data_id,
@@ -389,8 +392,8 @@ export const newClosetCostumes_data = async (
   product_photo
 ) => {
   try {
-    const newClosetCostumes_data = await add_newClosetCostumes_data(
-      `http://localhost:3000/api/closet_costumes_data/:closet_costumes_data_id`,
+    const addCostumes_dataToCloset = await addClosetCostumes_data(
+      `http://localhost:3000/api/closetCostumes_data/:closetCostumes_data_id`,
       {
         method: "POST",
         headers: {
@@ -424,7 +427,7 @@ export const deleteClosetCostumes_data = async (
 ) => {
   try {
     const closetCostumes_data_id = await axios.patch(
-      `http://localhost:3000/api/closet_costumes_data`,
+      `http://localhost:3000/api/closetCostumes_data`,
       {
         method: "DELETE",
         headers: {

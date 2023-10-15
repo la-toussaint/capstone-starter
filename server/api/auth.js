@@ -46,7 +46,7 @@ router.post("/register", async (req, res, next) => {
 
     delete password;
 
-    res.send({ name, username, hashedPassword, fav_brand, token });
+    res.send({ customers, fav_brand, name, token });
   } catch (error) {
     res.json({ error });
   }
@@ -57,6 +57,7 @@ router.post("/login", async (req, res, next) => {
     const { username, password, fav_brand, name } = req.body.customers;
     const customers = await getCustomersByUsername(username);
     const validPassword = await bcrypt.compare(password, customers.password);
+    console.log("validPassword: ", validPassword);
     if (validPassword) {
       console.log("validPassword customers: ", customers);
       //creating our token
