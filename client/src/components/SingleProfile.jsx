@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import NavBar from "./Navbar";
 import { useState } from "react";
-import { fetchProfile, deleteClosetSneaks_data } from "../API/ajax-helpers";
+import { fetchProfile, deleteClosetProduct_data } from "../API/ajax-helpers";
 import { setProfile, setToken } from "./redux/index";
 import React from "react";
 
@@ -30,7 +30,7 @@ export default function ProfileLog() {
     const product_title = { product_title };
     checkIfCrossoriginMeAvailable()
       .then((crossoriginMeAvailable) => {
-        return imageUrls.map((imageUrl, index) => (
+        return imageUrls.map((imageUrl, id) => (
           <img
             src={
               crossoriginMeAvailable
@@ -38,7 +38,7 @@ export default function ProfileLog() {
                 : `https://cors-anywhere.herokuapp.com/${imageUrl}`
             }
             crossorigin="anonymous"
-            alt={product_title}
+            alt={product.product_data_id}
             type="image/png"
           />
         ));
@@ -52,9 +52,9 @@ export default function ProfileLog() {
     setIsOpen(!isOpen);
   };
 
-  const handlePostDelete = (token, sneaks_data_id) => {
-    deleteClosetSneaks_data(token, sneaks_data_id);
-    deletePostFromProfile(id);
+  const handleClosetProduct_dataDelete = (token, product_data_id) => {
+    deleteClosetProduct_data(token, product_data_id);
+    deleteClosetProduct_data(id);
   };
 
   return (
@@ -69,12 +69,12 @@ export default function ProfileLog() {
         {isOpen && (
           <ul className="profile-log-list">
             {customers?.products?.map((product) => (
-              <li className="profile-log-item" key={product.sneaks_data_id}>
+              <li className="profile-log-item" key={product.product_data_id}>
                 Pokémon Image:{" "}
                 <img
                   className="post-img"
                   src={product.product_photo}
-                  alt={`${i + 1}`}
+                  alt={product.product_data_id}
                 />
                 <p> {product.asin}</p>
                 <p>{product.product_title}</p>
@@ -118,7 +118,7 @@ export default function ProfileLog() {
                   onClick={() => handlePostDelete(token, { sneaks_data_id })}
                   disabled={customers.sneaks_data_id !== product.sneaks_data_id}
                 >
-                  Delete post
+                  Delete item from closet
                 </button>
               </li>
             ))}

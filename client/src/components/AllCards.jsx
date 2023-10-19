@@ -64,7 +64,7 @@ function AllCards() {
     addClosetSneaks_data({ ...[sneaks_data_id] });
   };
   return (
-    <div className="allcards-background-container">
+    <div className="all-cards-background-container">
       <SearchBar setSearchParam={setSearchParam} />
       {products.map((product, i) => {
         return (

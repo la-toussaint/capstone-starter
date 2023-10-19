@@ -225,13 +225,13 @@ export async function SingleProfile(username) {
 }
 
 export async function makeContact(
-	lastname,
-	firstname,
-	username,
-	email,
-	fav_brand,
-   query,
-   no_account
+  lastname,
+  firstname,
+  username,
+  email,
+  fav_brand,
+  query,
+  no_account
 ) {
   try {
     const response = await fetch(`http://localhost:3000/api/sneaks_data`, {
@@ -272,7 +272,11 @@ export const fetchAllCostumes_data = async () => {
   }
 };
 
-export const sneaksPhotoBackground = async (sneaks_data_id, fields) => {
+export const sneaksPhotoBackground = async (
+  sneaks_data_id,
+  product_photo,
+  fields
+) => {
   if (!product_photo || !sneaks_data_id) {
     return null;
   }
@@ -292,8 +296,12 @@ export const sneaksPhotoBackground = async (sneaks_data_id, fields) => {
   }
 };
 
-export const costumesPhotoBackground = async (sneaks_data_id, fields) => {
-  if (!product_photo || !sneaks_data_id) {
+export const costumesPhotoBackground = async (
+  costumes_data_id,
+  product_photo,
+  fields
+) => {
+  if (!product_photo || !costumes_data_id) {
     return null;
   }
   try {
@@ -305,7 +313,7 @@ export const costumesPhotoBackground = async (sneaks_data_id, fields) => {
     const output = await removedBackground.input;
     const removedBackground = costumesData.product_photo;
     const result = updatedCostumesData;
-
+console.log('result: ', result);
     return updatedCostumesData;
   } catch (error) {
     throw error;
@@ -381,6 +389,36 @@ export const deleteClosetSneaks_data = async (
   }
 };
 
+export const deleteClosetCostumes_data = async (
+  closet_id,
+  closetSneaks_data_id,
+  sneaks_data_id
+) => {
+  try {
+    const closetCostumes_data_id = await axios.patch(
+      `http://localhost:3000/api/closetSneaks_data`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          closetCostumes_data_id: {
+            closet_id,
+            costumes_data_id,
+          },
+        }),
+      }
+    );
+    const result = await response.json();
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const addClosetCostumes_data = async (
   closetCostumes_data,
   closet_id,
@@ -420,14 +458,53 @@ export const addClosetCostumes_data = async (
   }
 };
 
-export const deleteClosetCostumes_data = async (
+export const addClosetProduct_data = async (
+  closetProduct_data,
   closet_id,
-  closetCostumes_data_id,
-  costumes_data_id
+  product_data_id,
+  product_data,
+  product_title,
+  product_price,
+  product_url,
+  product_photo
 ) => {
   try {
-    const closetCostumes_data_id = await axios.patch(
-      `http://localhost:3000/api/closetCostumes_data`,
+    const addProduct_dataToCloset = await addClosetProduct_data(
+      `http://localhost:3000/api/closetProduct_data/:closetProduct_data_id`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          closetProduct_data,
+          product_data_id,
+          product_data: {
+            product_title,
+            product_price,
+            product_url,
+            product_photo,
+          },
+        }),
+      }
+    );
+    const result = await response.json();
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteClosetProduct_data = async (
+  closet_id,
+  closetProduct_data_id,
+  product_data_id
+) => {
+  try {
+    const closetProduct_data_id = await axios.patch(
+      `http://localhost:3000/api/closetProduct_data`,
       {
         method: "DELETE",
         headers: {
@@ -435,9 +512,9 @@ export const deleteClosetCostumes_data = async (
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          closetCostumes_data_id: {
+          closetProduct_data_id: {
             closet_id,
-            costumes_data_id,
+            product_data_id,
           },
         }),
       }

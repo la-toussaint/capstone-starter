@@ -1,17 +1,17 @@
-:root {
+/* :root {
 	
 		--s: 100px; /* control the size */
 		
-		--_g: #0000 90deg,#366 0;
+		/* --_g: #0000 90deg,#366 0;
 		background: 
 		  conic-gradient(from 90deg at 2px 2px,var(--_g)),
 		  conic-gradient(from 90deg at 1px 1px,var(--_g));
-		background-size: var(--s) var(--s), calc(var(--s)/5) calc(var(--s)/5);
+		background-size: var(--s) var(--s), calc(var(--s)/5) calc(var(--s)/5); */
 
 	
 	
 	
-}
+/* }  */
 	
 .kick-div
 	{
@@ -51,11 +51,18 @@
 	}
 	
 .home-background-container {
-		background-image: url('./string Background Removed.png');
-		background-size: cover; /* Cover the entire container */
-		background-repeat: no-repeat; /* No repeating of the image */
-		background-position: center; /* Center the image horizontally and vertically */
-	  }
+	display: grid;
+	background-image: url('./string Background Removed.png');
+	background-color: #0072b5;
+	background-size: 100%; /* Cover the entire container */
+	background-repeat: repeat; /* No repeating of the image */
+	background-position: center;
+	z-index: 10;	
+	margin-top: 150px;
+	height: 100vh;
+	justify-content: space-evenly;
+	width: 100%;
+		  } /* Center the image horizontally and vertically */
 	  
 	  .sneakers-shop-background-container {
 		background-image: url('./background-image-subway.png');
@@ -73,6 +80,12 @@
 		background-image: url('./background-image-subway.png');
 		background-size: cover; /* Cover the entire container */
 		background-repeat: no-repeat; /* No repeating of the image */
+		background-position: center; /* Center the image horizontally and vertically */
+	  }
+	  .all-cards-background-container {
+		background-image: url('./background-image-subway.png');
+		background-size: 50%; /* Cover the entire container */
+		background-repeat: repeat; /* No repeating of the image */
 		background-position: center; /* Center the image horizontally and vertically */
 	  }
   
@@ -351,4 +364,80 @@
 	padding: 10px;
 	border-radius: 15px;
 	border: 3px solid #ffffff;
+  }
+
+  #fps {
+  	margin-top: 5px;
+  	margin-left: 35px;
+  }
+
+  a {
+  	color: rgba(255, 255, 255, .65);
+  	text-decoration: none;
+  }
+
+  a:hover {
+  	color: rgba(255, 255, 255, 1);
+  }
+
+  /* hardware accelatator class */
+  .trans3d {
+  	-webkit-transform-style: preserve-3d;
+  	-webkit-transform: translate3d(0, 0, 0);
+  	-moz-transform-style: preserve-3d;
+  	-moz-transform: translate3d(0, 0, 0);
+  	-ms-transform-style: preserve-3d;
+  	-ms-transform: translate3d(0, 0, 0);
+  	transform-style: preserve-3d;
+  	transform: translate3d(0, 0, 0);
+
+  	/*-webkit-backface-visibility: hidden;
+		-moz-backface-visibility: hidden;
+		-ms-backface-visibility:hidden;
+		backface-visibility:hidden;*/
+  }
+
+  #contentContainer {
+  	position: absolute;
+  	margin-left: -500px;
+  	margin-top: -500px;
+  	left: 50%;
+  	top: 50%;
+  	width: 1000px;
+  	height: 1000px;
+  }
+
+  #carouselContainer {
+  	position: absolute;
+  	margin-left: -500px;
+  	margin-top: -500px;
+  	left: 50%;
+  	top: 50%;
+  	width: 1000px;
+  	height: 1000px;
+  }
+
+  .carouselItem {
+  	width: 320px;
+  	height: 130px;
+  	position: absolute;
+  	left: 50%;
+  	top: 50%;
+  	margin-left: -160px;
+  	margin-top: -90px;
+  	visibility: hidden;
+  }
+
+  .carouselItemInner {
+  	width: 320px;
+  	height: 130px;
+  	position: absolute;
+  	color: aqua;
+  	font-size: 72px;
+  	left: 50%;
+  	top: 50%;
+  	margin-left: -160px;
+  	margin-top: -90px;
+  	text-align: center;
+  	padding-top: 50px;
   }

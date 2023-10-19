@@ -9,6 +9,7 @@ import SpinCarousel from "./components/SpinCarousel";
 import Closet from "./components/Closet";
 import NavBar from "./components/Navbar";
 import AllCards from "./components/AllCards";
+import Home from "./components/Home";
 import "./index.css";
 
 import { fetchProfile, testAuth } from "./API/ajax-helpers";
@@ -50,10 +51,8 @@ export default function App(customers, username, password, result, isLoggedIn) {
     <>
       <NavBar />
       <Routes>
-	  <Route
-          path="/my-closet"
-          element={<Closet />}/>        
-		  <Route
+        <Route path="/my-closet" element={<Closet />} />
+        <Route
           path="/all-carousel"
           element={
             <AuthRoute token={token}>
@@ -62,15 +61,7 @@ export default function App(customers, username, password, result, isLoggedIn) {
           }
         />
         {/* </AuthRoute> */}
-        <Route
-          path="/"
-          element={
-            <AuthRoute token={token}>
-              <NavBar />
-            </AuthRoute>
-          }
-        />
-      
+        <Route path="/" element={<Home />} />
 
         <Route path="/all-cards" element={<AllCards />} />
         {/* <Route path="/customers/:userId" element={<RenderSelectedUser customers={customers} />} /> */}
@@ -95,10 +86,12 @@ export default function App(customers, username, password, result, isLoggedIn) {
             />
           }
         />
-        {<Route
-          path="/profile"
-          element={<SingleProfile customers={customers} token={token} />}
-        />}
+        {
+          <Route
+            path="/profile"
+            element={<SingleProfile customers={customers} token={token} />}
+          />
+        }
       </Routes>
       {message && <Messages message={message} onClose={setMessage} />}
     </>

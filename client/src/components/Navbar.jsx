@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import "./styles.css"; // Import your CSS file
+import "../index.css"; // Import your CSS file
 
 function NavBar() {
   const token = useSelector((state) => state.auth.token);
@@ -28,7 +28,7 @@ function NavBar() {
         <Link to="/all-carousel">Sneaker Shop</Link>
         <Link to="/all-cards">Browse All Items</Link>
         <Link to="/all-carousel">Sneaker Shop</Link>
-        <Link to="/nav">Home</Link>
+        <Link to="/home">Home</Link>
         {!Boolean(token) && <Link to="/register">Register</Link>}
         {!Boolean(token) && <Link to="/login">Log In</Link>}
         <Link to="/profile">Your Profile</Link>
