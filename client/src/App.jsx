@@ -5,10 +5,10 @@ import Login from "./components/Login";
 import { Messages } from "./components/Messages";
 
 import SingleProfile from "./components/SingleProfile";
-import SpinCarousel from "./components/SpinCarousel";
-import Closet from "./components/Closet";
+import SpinCarousel from "./components/KicksCloset";
+import Closet from "./components/CostumesCloset";
 import NavBar from "./components/Navbar";
-import AllCards from "./components/AllCards";
+import AllCards from "./components/AllClosets";
 import Home from "./components/Home";
 import "./index.css";
 
@@ -51,22 +51,21 @@ export default function App(customers, username, password, result, isLoggedIn) {
     <>
       <NavBar />
       <Routes>
-        <Route path="/my-closet" element={<Closet />} />
+       
+		 <Route path="/" element={<Home />} />
+		<Route path="/my-closet" element={<CostumesCloset />} />
+		<Route path="/all-carousel" element={<KicksCloset />} />
+		<Route path="/all-cards" element={<AllClosets />} />
         <Route
-          path="/all-carousel"
+          path="/custom-carousel"
           element={
             <AuthRoute token={token}>
-              <SpinCarousel />
+              <CustomCarousel />
             </AuthRoute>
           }
         />
-        {/* </AuthRoute> */}
-        <Route path="/" element={<Home />} />
-
-        <Route path="/all-cards" element={<AllCards />} />
-        {/* <Route path="/customers/:userId" element={<RenderSelectedUser customers={customers} />} /> */}
         <Route
-          path="/login"
+          path="/login/login"
           element={
             <Login
               setMessage={setMessage}
@@ -76,7 +75,7 @@ export default function App(customers, username, password, result, isLoggedIn) {
           }
         />
         <Route
-          path="/register"
+          path="/login/register"
           element={
             <Register
               customers={customers}
@@ -92,6 +91,7 @@ export default function App(customers, username, password, result, isLoggedIn) {
             element={<SingleProfile customers={customers} token={token} />}
           />
         }
+		<Route path="/contact-us" element={<Contact />} />
       </Routes>
       {message && <Messages message={message} onClose={setMessage} />}
     </>

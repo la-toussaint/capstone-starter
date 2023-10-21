@@ -526,3 +526,26 @@ export const deleteClosetProduct_data = async (
     console.error(error);
   }
 };
+
+export async function submitForm(
+	lastname,firstname,email,fav_brand,query,todo
+  ) {
+	try {
+	  const response = await fetch(`http://localhost:3000/api/contact_us`, {
+		method: "POST",
+		headers: {
+		  "Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+		  post: {
+			lastname,firstname,email,fav_brand,query,todo
+		  },
+		}),
+	  });
+	  const result = await response.json();
+	  console.log(result);
+	  return result;
+	} catch (error) {
+	  console.error(error);
+	}
+  }

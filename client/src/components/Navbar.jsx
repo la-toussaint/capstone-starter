@@ -11,12 +11,12 @@ function NavBar() {
   // Determine which CSS class to apply based on the current route
   const getBackgroundClass = () => {
     if (location.pathname === "/my-closet") {
-      return "my-closet-background";
+      return "costumes-closet-background-container";
     } else if (location.pathname === "/all-carousel") {
-      return "sneaker-shop-background";
+      return "kicks-closet-background-container";
     } else if (location.pathname === "/contact-us") {
       return "contact-us-background";
-    } else if (location.pathname === "/nav") {
+    } else if (location.pathname === "/") {
       return "home-background";
 
       // Add other route-specific checks as needed
@@ -24,10 +24,10 @@ function NavBar() {
 
     return (
       <div className={`nav ${getBackgroundClass()}`}>
-        <Link to="/my-closet">Halloween Shop</Link>
-        <Link to="/all-carousel">Sneaker Shop</Link>
+        <Link to="/my-closet">Costumes Closet</Link>
+        <Link to="/all-carousel">Kicks Closet</Link>
         <Link to="/all-cards">Browse All Items</Link>
-        <Link to="/all-carousel">Sneaker Shop</Link>
+        <Link to="/custom-carousel">Custom Carousel</Link>
         <Link to="/home">Home</Link>
         {!Boolean(token) && <Link to="/register">Register</Link>}
         {!Boolean(token) && <Link to="/login">Log In</Link>}

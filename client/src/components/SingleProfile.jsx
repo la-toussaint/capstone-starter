@@ -60,7 +60,7 @@ export default function ProfileLog() {
   return (
     <div className="profile-container">
       <h2 className="profile-header">
-        Products for Username: {customers?.username}
+       Closets for Username: {customers?.username}
       </h2>
       <div>
         <button className="profile-log-button" onClick={handleToggleDropdown}>
@@ -68,11 +68,11 @@ export default function ProfileLog() {
         </button>
         {isOpen && (
           <ul className="profile-log-list">
-            {customers?.products?.map((product) => (
-              <li className="profile-log-item" key={product.product_data_id}>
+            {customers?.closets?.map((closet_id) => (
+              <li className="profile-log-item" key={closets.ClosetProduct_data_id}>
                 Pokémon Image:{" "}
                 <img
-                  className="post-img"
+                  className="closet-img"
                   src={product.product_photo}
                   alt={product.product_data_id}
                 />
